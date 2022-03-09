@@ -1,38 +1,100 @@
-.App {
-  text-align: center;
+* {
+	font-family: Avenir, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+		Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji,
+		Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+	letter-spacing: 0.5px;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* width */
+::-webkit-scrollbar {
+	width: 10px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+/* Track */
+::-webkit-scrollbar-track {
+	box-shadow: inset 0 0 5px grey; 
+	border-radius: 10px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+/* Handle */
+::-webkit-scrollbar-thumb {
+	background: lightblue; 
+	border-radius: 10px; 
 }
 
-.App-link {
-  color: #61dafb;
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+	background: rgb(145, 199, 218); 
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.main{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 91vh;
+}	
+.main-container{
+	/* display: flex;
+	text-align: center; */
+	width: 85vw;
+	height: 580px;
+	/* background-color: red; */
+	display: grid;
+	grid-template-areas:
+	  'video chatbox'
+	  'control chatbox';
+	/* Standard in youtube: 60vw */
+	grid-template-rows: 30vw auto;
+	grid-template-columns: 54vw auto;
+	gap: 18px 24px;
+	/* background-color: #2196F3; */
+}
+
+.video video { grid-area: video; background-color: red; }
+.control { grid-area: control; background-color: wheat;}
+
+.chatbox {
+	grid-area: chatbox; 
+	/* background-color: red; */
+}
+
+
+.title{
+    display: flex; 
+    justify-content: center; 
+    font-family: 'Roboto', sans-serif;
+    margin: 5px 0px 15px;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.input{
+    background-color: #F5F5F5;
+    margin: 0;
+    padding: 10px;
+    border: 2px solid #E7E7E7;
+    box-shadow: 1px 1px 1px 1px #888888;
+    border-radius: 5px;
+
+	/* position: relative; */
+	/* overflow: hidden; */
+}
+
+.scroll-bar{
+	height: 90%;
+	border: 1px solid #E7E7E7;
+	background-color: white;
+	padding: 10px;
+	overflow-y: scroll;
+}
+
+.message{
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	margin: 5px 0px;
+	background-color: #F7CAC9;
+	padding: 8px 12px;
+	margin: 10px 5px;
+	font-weight: 500;
 }
