@@ -81,7 +81,8 @@
 }
 
 .scroll-bar{
-	height: 90%;
+	height: 72vh;
+	margin: 0px 8px;
 	border: 1px solid #E7E7E7;
 	background-color: white;
 	padding: 10px;
@@ -93,8 +94,11 @@
 	flex-direction: row;
 	align-items: center;
 	margin: 5px 0px;
-	background-color: #F7CAC9;
+	background-color: #F7CAC9; 
+	/* light-blue */
 	padding: 8px 12px;
 	margin: 10px 5px;
 	font-weight: 500;
+	border: 1px solid gray;
+	border-radius: 3px;
 }
