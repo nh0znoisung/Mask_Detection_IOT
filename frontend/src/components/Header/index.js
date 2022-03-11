@@ -1,6 +1,7 @@
 import React from 'react'
 import { Navbar, Nav } from 'react-bootstrap'
 import logo from './logo.png';
+import {Link} from 'react-router-dom'
 
 
 export default function Header()  {
@@ -22,8 +23,8 @@ export default function Header()  {
                         style={{ maxHeight: '100px', fontSize: '18px' }}
                         navbarScroll
                     >
-                        <Nav.Link as={Link} to="/nguyenlieu" style={{marginLeft: '5px'}}>Nguyên liệu</Nav.Link>
-                        <Nav.Link as={Link} to="/themnguyenlieu" style={{marginLeft: '15px'}}>Thêm nguyên liệu</Nav.Link>                        
+                        <Nav.Link as={Link} to="/login" style={{marginLeft: '5px'}}>Login</Nav.Link>
+                        <Nav.Link as={Link} to="/admin" style={{marginLeft: '15px'}}>Admin</Nav.Link>                        
                     </Nav>
                 </Navbar.Collapse> */}
             </Navbar>
