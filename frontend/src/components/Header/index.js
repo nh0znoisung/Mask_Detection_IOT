@@ -1,8 +1,8 @@
 import React from 'react'
-import { Navbar, Nav } from 'react-bootstrap'
+import { Navbar } from 'react-bootstrap'
 import logo from './logo.png';
 import logoutimg from './logout.png';
-import {Link, useNavigate} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import { useAuth } from "../../contexts/AuthContext"
 
 
