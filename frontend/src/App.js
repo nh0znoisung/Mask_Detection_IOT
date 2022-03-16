@@ -1,5 +1,4 @@
 import './App.css';
-import Header from './components/Header';
 import Main from './components/Main';
 import Login from './components/Login';
 import PrivateRoute from './components/PrivateRoute';
@@ -7,9 +6,8 @@ import PrivateRoute from './components/PrivateRoute';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "../node_modules/video-react/dist/video-react.css";
 // @import "~video-react/styles/scss/video-react"; //for scss
-import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import {AuthProvider} from './contexts/AuthContext';
-import { useAuth } from './contexts/AuthContext';
 
 
 function App() {

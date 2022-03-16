@@ -44,7 +44,11 @@ export default function Main() {
     const [bulb, setBulb] = useState('0')
     
     const message_item = message.map((item) => {
+        setMessage(message)
+        setDoor('1')
+        setBulb('0')
         return <Message message={item} />
+
     })
     return (
         <>
