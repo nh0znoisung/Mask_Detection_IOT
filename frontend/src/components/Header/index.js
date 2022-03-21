@@ -29,14 +29,6 @@ export default function Header()  {
                 />
                 <Navbar.Toggle aria-controls="navbarScroll"  />
                 <Navbar.Collapse id="navbarScroll"  className="justify-content-end" onClick={handleLogout}>
-                    {/* <Nav
-                        className="mr-auto my-2 my-lg-0"
-                        style={{ maxHeight: '100px', fontSize: '18px' }}
-                        navbarScroll
-                    >
-                        <Nav.Link as={Link} to="/login" style={{marginLeft: '5px'}}>Login</Nav.Link>
-                        <Nav.Link as={Link} to="/admin" style={{marginLeft: '15px'}}>Admin</Nav.Link>                        
-                    </Nav> */}
                     <img
                         src={logoutimg}
                         width="40"

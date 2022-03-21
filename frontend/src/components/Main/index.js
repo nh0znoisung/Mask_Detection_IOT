@@ -44,9 +44,9 @@ export default function Main() {
     const [bulb, setBulb] = useState('0')
     
     const message_item = message.map((item) => {
-        setMessage(message)
-        setDoor('1')
-        setBulb('0')
+        // setMessage(message)
+        // setDoor('1')
+        // setBulb('0')
         return <Message message={item} />
 
     })
@@ -55,13 +55,15 @@ export default function Main() {
             <Header />
             <div className='main'>
                 <div className='main-container'>
-                    <div className='video'>
-                    <Player
+                    {/* <div className='video'> */}
+                    {/* <Player
                         playsInline
                         poster="/assets/poster.png"
-                        src="https://media.w3.org/2010/05/sintel/trailer_hd.mp4"
-                    />          
-                    </div>
+                        // src="https://media.w3.org/2010/05/sintel/trailer_hd.mp4"
+                        src = "https://9be4-115-78-8-83.ngrok.io/video"
+                    />    */}
+                    <img style={{height: "30vw", width:"54vw"}} alt="Video here" src="https://acc6-115-78-8-83.ngrok.io/video"></img>       
+                    {/* </div> */}
                     <div className='info'>
                         <div className='door'>State of door:  <Door option={door} /></div>
                         <div className='bulb'>State of bulb:  <Bulb option={bulb} /></div>
