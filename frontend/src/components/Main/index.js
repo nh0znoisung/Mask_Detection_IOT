@@ -2,6 +2,7 @@ import React, {useState} from 'react'
 import { Player } from 'video-react';
 import {Button} from  'react-bootstrap';
 import Header from '../Header';
+import axios from 'axios';
 
 function Message(props){
     return(
@@ -38,18 +39,20 @@ function Bulb(props){
 
 export default function Main() {
     // Object + timestamp
-    const [message, setMessage] = useState(['Hệ thống AI đã xác nhận người', 'Hệ thống AI đã yêu cầu mở cửa', 'Admin đã yêu cầu mở cửa khẩn cấp', 'Admin đã yêu cầu mở cửa khẩn cấp', 'Admin đã yêu cầu mở cửa khẩn cấp', 'Admin đã yêu cầu mở cửa khẩn cấp','Admin đã yêu cầu mở cửa khẩn cấp', 'Admin đã yêu cầu mở cửa khẩn cấp', 'Admin đã yêu cầu mở cửa khẩn cấp', 'Admin đã yêu cầu mở cửa khẩn cấp', 'Admin đã yêu cầu mở cửa khẩn cấp', 'Hệ thống AI đã yêu cầu mở cửa', 'Admin đã yêu cầu mở cửa khẩn cấp', 'Admin đã yêu cầu mở cửa khẩn cấp', 'Admin đã yêu cầu mở cửa khẩn cấp', 'Admin đã yêu cầu mở cửa khẩn cấp','Admin đã yêu cầu mở cửa khẩn cấp', 'Admin đã yêu cầu mở cửa khẩn cấp', 'Admin đã yêu cầu mở cửa khẩn cấp', 'Admin đã yêu cầu mở cửa khẩn cấp', 'Admin đã yêu cầu mở cửa khẩn cấp'])
+    const [message, setMessage] = useState([]);
+    // useState(['Hệ thống AI đã xác nhận người', 'Hệ thống AI đã yêu cầu mở cửa', 'Admin đã yêu cầu mở cửa khẩn cấp', 'Admin đã yêu cầu mở cửa khẩn cấp', 'Admin đã yêu cầu mở cửa khẩn cấp', 'Admin đã yêu cầu mở cửa khẩn cấp','Admin đã yêu cầu mở cửa khẩn cấp', 'Admin đã yêu cầu mở cửa khẩn cấp', 'Admin đã yêu cầu mở cửa khẩn cấp', 'Admin đã yêu cầu mở cửa khẩn cấp', 'Admin đã yêu cầu mở cửa khẩn cấp', 'Hệ thống AI đã yêu cầu mở cửa', 'Admin đã yêu cầu mở cửa khẩn cấp', 'Admin đã yêu cầu mở cửa khẩn cấp', 'Admin đã yêu cầu mở cửa khẩn cấp', 'Admin đã yêu cầu mở cửa khẩn cấp','Admin đã yêu cầu mở cửa khẩn cấp', 'Admin đã yêu cầu mở cửa khẩn cấp', 'Admin đã yêu cầu mở cửa khẩn cấp', 'Admin đã yêu cầu mở cửa khẩn cấp', 'Admin đã yêu cầu mở cửa khẩn cấp'])
     
     const [door, setDoor] = useState('1')
     const [bulb, setBulb] = useState('0')
     
     const message_item = message.map((item) => {
-        // setMessage(message)
-        // setDoor('1')
-        // setBulb('0')
         return <Message message={item} />
 
     })
+
+    function handleDoor(){
+        setDoor()
+    }
     return (
         <>
             <Header />
@@ -69,7 +72,7 @@ export default function Main() {
                         <div className='bulb'>State of bulb:  <Bulb option={bulb} /></div>
                     </div>
                     <div className='control'>
-                        <Button variant="danger" className="btn-1">Emergency open</Button> 
+                        <Button variant="danger" className="btn-1" onClick={() => handleDoor()}>Emergency open</Button> 
                         <input type="checkbox" className="toggle" id="rounded"></input>
                         <label for="rounded" data-checked="Manual" className="round" data-unchecked="Auto"></label>  
                         <Button variant="info" className="btn-1">Bulb switcher</Button>
