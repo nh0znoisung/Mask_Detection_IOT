@@ -1,0 +1,141 @@
+commit 11405d79c877c14af14209e9de1c888995074f88
+Author: nh0znoisung <tuanbo2001@gmail.com>
+Date:   Tue Mar 22 17:33:27 2022 +0700
+
+    Backend
+
+commit 174d0736702acd01450654bf02912e28a2f1dca6
+Author: nh0znoisung <tuanbo2001@gmail.com>
+Date:   Tue Mar 22 17:29:35 2022 +0700
+
+    Del Backend
+
+commit 1942d64c0f94e57d4aefc832c69af5c8c4c474a0
+Author: nh0znoisung <tuanbo2001@gmail.com>
+Date:   Tue Mar 22 17:21:48 2022 +0700
+
+    backend
+
+commit 54fe0da0031ad0970179de47b556e1ef5fda880c
+Author: nh0znoisung <tuanbo2001@gmail.com>
+Date:   Mon Mar 21 21:59:19 2022 +0700
+
+    env
+
+commit 3df95eb2106f7adde08631c4c2eae48130eb8df6
+Author: nh0znoisung <tuanbo2001@gmail.com>
+Date:   Mon Mar 21 21:12:00 2022 +0700
+
+    Update
+
+commit c58f0dae66e949e20c211c8bd986ab41ce5f5e9a
+Author: PhuLoi-1911545 <luonghuuphuloi11@gmail.com>
+Date:   Thu Mar 17 22:15:13 2022 +0700
+
+    arduino v2
+
+commit d6c1923d542fd9e1835189e23050c8ab02b8af65
+Author: PhuLoi-1911545 <luonghuuphuloi11@gmail.com>
+Date:   Thu Mar 17 15:04:13 2022 +0700
+
+    Upload Arduino
+
+commit 4c1c94ceb7bb8b68559fd6c576d92febd7d75198
+Merge: 9d94b38 75ed4bd
+Author: PhuLoi-1911545 <luonghuuphuloi11@gmail.com>
+Date:   Wed Mar 16 07:21:01 2022 +0700
+
+    Merge branch 'main' of https://github.com/nh0znoisung/Mask_Detection_IOT
+
+commit 9d94b38c94a4c8dac470fec5436e0a9cd66d65fe
+Author: PhuLoi-1911545 <luonghuuphuloi11@gmail.com>
+Date:   Wed Mar 16 07:20:47 2022 +0700
+
+    Update main.py
+
+commit 75ed4bde6f61831f48ee6a951f8a1cf9e0284b8c
+Author: nh0znoisung <tuanbo2001@gmail.com>
+Date:   Sun Mar 13 17:02:49 2022 +0700
+
+    asdaa
+
+commit cb414f742b93c4f2b3a1451da80236a02c6bebea
+Author: nh0znoisung <tuanbo2001@gmail.com>
+Date:   Sun Mar 13 16:45:24 2022 +0700
+
+    build
+
+commit 97aa26ff58d3fc8484519e09dcd8145f085b1710
+Author: nh0znoisung <tuanbo2001@gmail.com>
+Date:   Sun Mar 13 16:40:30 2022 +0700
+
+    logout
+
+commit 5086c3d939123ed814dcb65fccbe98ddb26fef90
+Author: nh0znoisung <tuanbo2001@gmail.com>
+Date:   Fri Mar 11 16:57:56 2022 +0700
+
+    deploy firsttime
+
+commit 7aca5bcfe0c6d2669bd9a3276d38f7b9313dc68f
+Author: nh0znoisung <tuanbo2001@gmail.com>
+Date:   Thu Mar 10 15:26:39 2022 +0700
+
+    push sth
+
+commit 3641a6ca62dea2e1b7d6d6273e9a2ad3e96d0662
+Merge: 3a4a92d 76f49c3
+Author: PhuLoi-1911545 <luonghuuphuloi11@gmail.com>
+Date:   Wed Mar 9 23:12:50 2022 +0700
+
+    Merge branch 'main' of https://github.com/nh0znoisung/Mask_Detection_IOT
+
+commit 3a4a92d6af7b841ee58721eb526d81e14b4477e9
+Author: PhuLoi-1911545 <luonghuuphuloi11@gmail.com>
+Date:   Wed Mar 9 23:12:42 2022 +0700
+
+    Add TestPython
+    
+    Folder này dùng để tạo các project Python cho việc testing
+
+commit 76f49c3a5cd57ba394cdda5d834b67c3568e2b32
+Author: nh0znoisung <tuanbo2001@gmail.com>
+Date:   Wed Mar 9 20:57:21 2022 +0700
+
+    update new frontend
+
+commit e40a1af0c2bd59a871ececdd6d37a6dea546a115
+Author: nh0znoisung <tuanbo2001@gmail.com>
+Date:   Wed Mar 9 07:53:37 2022 +0700
+
+    update front-end
+
+commit c4fd961c6d4f4ace90370e9c72104a30716b21eb
+Author: Quach Minh Tuan <55056655+nh0znoisung@users.noreply.github.com>
+Date:   Sat Mar 5 17:50:35 2022 +0700
+
+    Update README.md
+
+commit d0210c55039fbeb8b258f0225f0f6239db09cff1
+Author: Quach Minh Tuan <55056655+nh0znoisung@users.noreply.github.com>
+Date:   Sat Mar 5 17:50:17 2022 +0700
+
+    Update README.md
+
+commit 36d3ce72ff5bb7ad8ab175650949ef09753b3dae
+Author: Quach Minh Tuan <55056655+nh0znoisung@users.noreply.github.com>
+Date:   Sat Mar 5 17:42:55 2022 +0700
+
+    Update README.md
+
+commit c52e06ab80ba0083b3cfbe364e04e90f3f4b1580
+Author: Quach Minh Tuan <55056655+nh0znoisung@users.noreply.github.com>
+Date:   Sat Mar 5 17:39:00 2022 +0700
+
+    Update README.md
+
+commit eb8bb5e4a0b60b9a6663bf3069889d174bebbf2f
+Author: Quach Minh Tuan <55056655+nh0znoisung@users.noreply.github.com>
+Date:   Sat Mar 5 17:35:12 2022 +0700
+
+    Initial commit
