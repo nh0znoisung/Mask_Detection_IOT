@@ -1,8 +1,8 @@
 #include "esp_camera.h"
 #include <WiFi.h>
 
-const char* ssid = "Daddy2k1";
-const char* password = "khongbiet";
+const char* ssid = "daddyG4";
+const char* password = "concac123";
 
 #define PWDN_GPIO_NUM     32
 #define RESET_GPIO_NUM    -1
@@ -27,17 +27,19 @@ bool connected = false;
 WiFiClient live_client;
 
 
+// String index_html = "<meta charset=\"utf-8\"/>\n" \
+//                     "<style>\n" \
+//                     "#content {\n" \
+//                     "display: flex;\n" \
+//                     "flex-direction: column;\n" \
+//                     "justify-content: center;\n" \
+//                     "align-items: center;\n" \
+//                     "text-align: center;\n" \
+//                     "min-height: 100vh;}\n" \
+//                     "</style>\n" \
+//                     "<body bgcolor=\"#ffffff\"><div id=\"content\"><h2 style=\"color:#000000\">God Of Thunder</h2><img src=\"video\"></div></body>";
 String index_html = "<meta charset=\"utf-8\"/>\n" \
-                    "<style>\n" \
-                    "#content {\n" \
-                    "display: flex;\n" \
-                    "flex-direction: column;\n" \
-                    "justify-content: center;\n" \
-                    "align-items: center;\n" \
-                    "text-align: center;\n" \
-                    "min-height: 100vh;}\n" \
-                    "</style>\n" \
-                    "<body bgcolor=\"#ffffff\"><div id=\"content\"><h2 style=\"color:#000000\">God Of Thunder</h2><img src=\"video\"></div></body>";
+                     "<body><div id=\"content\"><img src= \"video\" ></div></body>";
 
 void configCamera()
 {
@@ -64,9 +66,18 @@ void configCamera()
   config.pixel_format = PIXFORMAT_JPEG;
 
   // config.frame_size = FRAMESIZE_QVGA;XGA
-  config.frame_size = FRAMESIZE_XGA;
-  config.jpeg_quality = 10;
-  config.fb_count = 1;
+  // config.frame_size = FRAMESIZE_SVGA;
+  // config.jpeg_quality = 12;
+  // config.fb_count = 1;
+  if(psramFound()){
+    config.frame_size = FRAMESIZE_UXGA;
+    config.jpeg_quality = 10;
+    config.fb_count = 2;
+  } else {
+    config.frame_size = FRAMESIZE_SVGA;
+    config.jpeg_quality = 30;
+    config.fb_count = 1;
+  }
 
   esp_err_t err = esp_camera_init(&config);
   if (err != ESP_OK) 
