@@ -124,19 +124,24 @@ def sendData_Adafruit(splitedData):
 
 def writeData_Microbit():
     switchLight = client.receive(AIO_FEED_SWITCH_Light)
-    switchDoor = client.receive(AIO_FEED_BUTTON_AuthorityDoor)
-    ser.write("swt-light-" + (str(switchLight) +"#").encode() )
-    ser.write("swt-door-" + (str(switchDoor)+"#").encode())
+    openDoor = client.receive(AIO_FEED_BUTTON_AuthorityDoor)
+    switchDoor = client.receive(AIO_FEED_SWITCH_Door)
+    ser.write("swt-light:" + (str(switchLight) +"#").encode() )
+    ser.write("open-door:" + (str(openDoor)+"#").encode())
+    ser.write("swt-door:" + (str(switchDoor)+"#").encode())
 
 count = 1000
 
 while True:
     readSerial()
+
     if count == 0:
         count = 1000
         writeData_Microbit()
     else:
         --count
+
+    # writeData_Microbit()
 
     time.sleep(1)
     #     value = random.randint(0, 100)

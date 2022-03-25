@@ -19,8 +19,8 @@
 
 #include "camera_pins.h"
 
-const char* ssid = "daddyG4";
-const char* password = "concac123";
+const char* ssid = "GodOfThunder";
+const char* password = "loveu3000";
 
 void startCameraServer();
 
@@ -55,11 +55,11 @@ void setup() {
   //                      for larger pre-allocated frame buffer.
   if(psramFound()){
     config.frame_size = FRAMESIZE_UXGA;
-    config.jpeg_quality = 10;
+    config.jpeg_quality = 25;
     config.fb_count = 2;
   } else {
     config.frame_size = FRAMESIZE_SVGA;
-    config.jpeg_quality = 12;
+    config.jpeg_quality = 30;
     config.fb_count = 1;
   }
 
