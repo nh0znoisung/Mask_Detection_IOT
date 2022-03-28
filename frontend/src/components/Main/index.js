@@ -63,7 +63,7 @@ function Bulb(props){
     
 }
 
-const url = 'http://localhost:5000/'
+const url = 'http://localhost:9000/'
 const TIMEZONE = "Asia/Ho_Chi_Minh"
 
 function convertDate(s){
@@ -157,7 +157,7 @@ export default function Main() {
                         // src="https://media.w3.org/2010/05/sintel/trailer_hd.mp4"
                         src = "https://9be4-115-78-8-83.ngrok.io/video"
                     />    */}
-                    {/* <img style={{height: "30vw", width:"54vw"}} alt="Video here" src="http://192.168.137.210:81/stream"></img>        */}
+                    <img style={{height: "30vw", width:"54vw"}} alt="Video here" src="http://localhost:9999/video"></img>       
                     {/* </div> */}
                     <div className='info'>
                         <div className='door'>State of door:  <Door option={door} /></div>
