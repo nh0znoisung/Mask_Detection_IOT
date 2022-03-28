@@ -145,7 +145,7 @@ def writeData_Microbit():
 # count = 10002
 
 while True:
-    # readSerial()
+    readSerial()
     #
     # if count == 0:
     #     count = 1000
