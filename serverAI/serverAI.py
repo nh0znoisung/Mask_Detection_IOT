@@ -1,11 +1,7 @@
 import socket, threading, pickle, struct
 from cv2 import VideoCapture
 from flask import Flask, render_template, request,Response
-<<<<<<< HEAD
 from flask_cors import CORS
-=======
-import urllib.request
->>>>>>> 09aad075c6ca798ac8e77276d93bedbcd612ba33
 import cv2,imutils,time
 from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 from tensorflow.keras.preprocessing.image import img_to_array
@@ -18,6 +14,7 @@ import imutils
 import time
 import cv2
 import os
+import urllib
 
 
 def detect_and_predict_mask(frame, faceNet, maskNet):
@@ -87,8 +84,8 @@ CORS(app)
 
 
 # url="https://media.w3.org/2010/05/sintel/trailer_hd.mp4"
-url ="http://192.168.137.96/800x600.mjpeg"
-# url ="http://192.168.137.96/800x600.jpg"
+# url ="http://192.168.137.96/800x600.mjpeg"
+url ="http://192.168.137.132/800x600.jpg"
 
 
 
@@ -196,13 +193,13 @@ def start_video_stream():
         prev_frame=frame
         
         fin=1
-        time.sleep(0.01)
-        cv2.imshow("Test", frame)
-        key = cv2.waitKey(1) & 0xFF
+    #     time.sleep(0.01)
+    #     cv2.imshow("Test", frame)
+    #     key = cv2.waitKey(1) & 0xFF
 
-    # if the `q` key was pressed, break from the loop
-        if key == ord("q"):
-            break
+    # # if the `q` key was pressed, break from the loop
+    #     if key == ord("q"):
+    #         break
 
 
 
