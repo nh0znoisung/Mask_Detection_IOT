@@ -39,8 +39,8 @@ def disconnected(client):
 
 def message(client, feed_id, payload):
     print("Nhan du lieu: "+ feed_id + payload)
-    # if isMicrobitConnected:
-    #     ser.write((str(payload) + "#").encode())  # đầy là lệnh ghi xuống microbit khi nhận dc dữ liệu
+    if isMicrobitConnected:
+        ser.write((payload).encode())  # đầy là lệnh ghi xuống microbit khi nhận dc dữ liệu
 
 
 
@@ -63,6 +63,7 @@ def getPort():
         port = ports[i]
         strPort = str(port)
         if "com0com - serial port emulator" in strPort:
+        # if "USB Serial Device" in strPort:
             splitPort = strPort.split(" ")
             commPort = (splitPort[0])
     return commPort
@@ -105,16 +106,29 @@ def sendData_Adafruit(splitedData):
     try:
         if splitedData[0] == "btn-start":
             print("Gui thanh cong den " +AIO_FEED_BUTTON_Start)
-            client.publish(AIO_FEED_BUTTON_Start,splitedData[1])
+            if  splitedData[1] == 1:
+                client.publish(AIO_FEED_SWITCH_Light,"START:ON")
+            elif splitedData[1] == 0:
+                client.publish(AIO_FEED_SWITCH_Light,"START:OFF")
+            # client.publish(AIO_FEED_BUTTON_Start,splitedData[1])
         elif splitedData[0] == "sensor-light":
             print("Gui thanh cong den " + AIO_FEED_SENSOR_Light)
             client.publish(AIO_FEED_SENSOR_Light, splitedData[1])
         elif splitedData[0] ==   "swt-light":
             print("Gui thanh cong den " + AIO_FEED_SWITCH_Light)
-            client.publish(AIO_FEED_SWITCH_Light,splitedData[1])
+            if  splitedData[1] == 1:
+                client.publish(AIO_FEED_SWITCH_Light,"LIGHT:ON")
+            elif splitedData[1] == 0:
+                client.publish(AIO_FEED_SWITCH_Light,"LIGHT:OFF")
+            # print("Gui thanh cong den " + AIO_FEED_SWITCH_Light)
+            # client.publish(AIO_FEED_SWITCH_Light,splitedData[1])
         elif splitedData[0] == "swt-door":
             print("Gui thanh cong den " + AIO_FEED_SWITCH_Door)
-            client.publish(AIO_FEED_SWITCH_Door,splitedData[1])
+            if  splitedData[1] == 1:
+                client.publish(AIO_FEED_SWITCH_Light,"DOOR:OPEN")
+            elif splitedData[1] == 0:
+                client.publish(AIO_FEED_SWITCH_Light,"DOOR:CLOSE")
+            # client.publish(AIO_FEED_SWITCH_Door,splitedData[1])
     except:
         pass
 
@@ -128,10 +142,10 @@ def writeData_Microbit():
     ser.write("open-door:" + (str(openDoor)+"#").encode())
     ser.write("swt-door:" + (str(switchDoor)+"#").encode())
 
-count = 1000
+# count = 10002
 
 while True:
-    readSerial()
+    # readSerial()
     #
     # if count == 0:
     #     count = 1000
@@ -141,10 +155,10 @@ while True:
 
     # writeData_Microbit()
 
-    time.sleep(1)
+    # time.sleep(1)
     #     value = random.randint(0, 100)
     #     print("Cap nhat:", value)
     #     client.publish("test-sensor", value)
     #
     #     time.sleep(1)
-    # pass
+    pass
