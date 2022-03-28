@@ -48,12 +48,25 @@
 	  'info chatbox'
 	  'control chatbox';
 
-	/* Standard in youtube: 60vw */
+	/* Standard: 60vw */
 	grid-template-rows: 30vw auto 75px;
 	grid-template-columns: 54vw auto;
 	gap: 18px 24px;
 	/* background-color: #2196F3; */
 }
+
+@media (max-width: 800px) {
+	.main-container {
+		grid-template-areas:
+		'video'
+		'info'
+		'control'
+		'chatbox';
+		/* grid-template-rows: auto auto auto; */
+	}
+}
+  
+  
 
 .video { grid-area: video; background-color: red; }
 

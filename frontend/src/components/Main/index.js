@@ -41,30 +41,26 @@ function Message(props){
 
 function Door(props){
     switch(props.option){
-        case '0':
+        case 'DOOR:CLOSE':
             return <span style={{color: "red"}}>Close</span>
-        // case '1':
-            // return <span style={{color: "#EE6B4E"}}>OPENING...</span>
-        case '1':
+        case 'DOOR:OPEN':
             return <span style={{color: "green"}}>OPEN</span>
-        // case '3':
-            // return <span style={{color: "#FFC300"}}>CLOSING...</span>
         default:
             return <span style={{color: "blue"}}>SOMETHING WRONG??</span>
     }
 }
 
 function Bulb(props){
-    if(props.option === '0'){
+    if(props.option === 'LIGHT:OFF'){
         return <span style={{color: "red"}}>Off</span>
-    }else{
+    }else if(props.option === 'LIGHT:ON'){
         return <span style={{color: "green"}}>On</span>
     }
-    
 }
 
-const url = 'http://localhost:5000/'
+const URL_BACKEND = 'http://localhost:5000/'
 const TIMEZONE = "Asia/Ho_Chi_Minh"
+const KEY = "aio_nbXu072Xt4xwZeqkDYUJMCMxi7pi"
 
 function convertDate(s){
     // s: string
@@ -77,13 +73,12 @@ export default function Main() {
     const [message, setMessage] = useState([])
 
     
-    const [door, setDoor] = useState('1')
-    const [bulb, setBulb] = useState('0')
+    const [door, setDoor] = useState('DOOR:CLOSE')
+    const [bulb, setBulb] = useState('LIGHT:OFF')
     
     useEffect(() => {
-        axios.get("https://6b5d-115-75-191-17.ngrok.io/").then(res => {console.log(res.data)}).catch(err => {console.log(err)})
 
-        axios.get(url).then(res => {setMessage(res.data)}).catch(err => {console.log(err)})
+        axios.get(URL_BACKEND).then(res => {setMessage(res.data)}).catch(err => {console.log(err)})
 
         axios.get("https://io.adafruit.com/api/v2/GodOfThunderK19/feeds/swt-light").then(res => {
                 console.log(res.data)
@@ -94,11 +89,7 @@ export default function Main() {
         let interval = null;
         let data_device;
         interval = setInterval(() => {
-            // /api/v2/{username}/feeds/{feed_key}/data
-            // https://io.adafruit.com/api/v2/GodOfThunderK19/feeds/hVNA81gluI7deGkFZK34L7zTRCdX/data
-            // https://io.adafruit.com/api/v2/GodOfThunderK19/feeds?x-aio-key=aio_hVNA81gluI7deGkFZK34L7zTRCdX
-            // https://io.adafruit.com/api/v2/GodOfThunderK19/feeds/swt-light/data
-            axios.get("https://io.adafruit.com/api/v2/GodOfThunderK19/feeds?x-aio-key=aio_hVNA81gluI7deGkFZK34L7zTRCdX").then(res => {
+            axios.get(`https://io.adafruit.com/api/v2/GodOfThunderK19/feeds?x-aio-key=` + KEY).then(res => {
                 data_device = res.data
                 // console.log(data_device)
                 setDoor(data_device.filter(item => item.key === 'swt-door')[0].last_value)
@@ -116,33 +107,41 @@ export default function Main() {
     })
 
     async function handleDoor(){
-        axios.post("https://io.adafruit.com/api/v2/GodOfThunderK19/feeds/swt-door/data", {"value": 1-door}, 
+        let obj = {
+            subject: 0,
+            action: 0,
+            state: 0
+        }
+        await axios.post(URL_BACKEND, obj).catch(err => {console.log(err)})
+        let newDoor = (door === 'DOOR:OPEN') ? 'DOOR:CLOSE' : 'DOOR:OPEN'
+        axios.post("https://io.adafruit.com/api/v2/GodOfThunderK19/feeds/swt-door/data", {"value": newDoor}, 
         {
             headers: {
-                'X-AIO-Key': 'aio_hVNA81gluI7deGkFZK34L7zTRCdX'
+                'X-AIO-Key': KEY
             }
         }
         ).catch(err => {console.log(err)})
+
+        axios.get(URL_BACKEND).then(res => {setMessage(res.data)}).catch(err => {console.log(err)})
     }
 
     async function handleBulb(){
-        console.log("Bulb clicked")
         let obj = {
             subject: 0,
             action: 2,
             state: 0
         }
-        await axios.post(url, obj).catch(err => {console.log(err)})
-
-        await axios.post("https://io.adafruit.com/api/v2/GodOfThunderK19/feeds/swt-light/data", {"value": 1-bulb},
+        await axios.post(URL_BACKEND, obj).catch(err => {console.log(err)})
+        let newBulb = (bulb === 'LIGHT:OFF') ? 'LIGHT:ON' : 'LIGHT:OFF'
+        await axios.post("https://io.adafruit.com/api/v2/GodOfThunderK19/feeds/swt-light/data", {"value": newBulb},
         {
             headers: {
-                'X-AIO-Key': 'aio_hVNA81gluI7deGkFZK34L7zTRCdX'
+                'X-AIO-Key': KEY
             }
         }
         ).catch(err => {console.log(err)})
 
-        axios.get(url).then(res => {setMessage(res.data)}).catch(err => {console.log(err)})
+        axios.get(URL_BACKEND).then(res => {setMessage(res.data)}).catch(err => {console.log(err)})
 
     }
     return (
