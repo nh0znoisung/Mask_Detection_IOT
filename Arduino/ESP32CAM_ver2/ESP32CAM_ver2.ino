@@ -1,8 +1,8 @@
 #include "esp_camera.h"
 #include <WiFi.h>
 
-const char* ssid = "daddyG4";
-const char* password = "concac123";
+const char* ssid = "GodOfThunder";
+const char* password = "loveu3000";
 
 #define PWDN_GPIO_NUM     32
 #define RESET_GPIO_NUM    -1
