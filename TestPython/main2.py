@@ -38,7 +38,7 @@ def disconnected(client):
 
 
 def message(client, feed_id, payload):
-    print("Nhan du lieu: " + payload)
+    print("Nhan du lieu: "+ feed_id + payload)
     # if isMicrobitConnected:
     #     ser.write((str(payload) + "#").encode())  # đầy là lệnh ghi xuống microbit khi nhận dc dữ liệu
 
