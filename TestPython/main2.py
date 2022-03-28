@@ -134,12 +134,12 @@ count = 1000
 
 while True:
     readSerial()
-
-    if count == 0:
-        count = 1000
-        writeData_Microbit()
-    else:
-        --count
+    #
+    # if count == 0:
+    #     count = 1000
+    #     writeData_Microbit()
+    # else:
+    #     --count
 
     # writeData_Microbit()
 

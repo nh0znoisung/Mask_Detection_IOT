@@ -1,7 +1,7 @@
 import socket, threading, pickle, struct
 from cv2 import VideoCapture
 from flask import Flask, render_template, request,Response
-
+import urllib.request
 import cv2,imutils,time
 from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 from tensorflow.keras.preprocessing.image import img_to_array
@@ -81,7 +81,9 @@ def detect_and_predict_mask(frame, faceNet, maskNet):
 app = Flask(__name__)
 
 
-url="http://127.0.0.1:5000/video"
+# url="https://media.w3.org/2010/05/sintel/trailer_hd.mp4"
+url ="http://192.168.137.96/800x600.mjpeg"
+# url ="http://192.168.137.96/800x600.jpg"
 
 
 
@@ -122,8 +124,6 @@ def start_video_stream():
     # initialize the video stream and allow the camera sensor to warm up
     print("[INFO] starting video stream...")
     # vs=VideoStream(url).start()
-    vs=cv2.VideoCapture(url)
-    time.sleep(5.0)
     # Read until video is completed
     # fps=0
     # st=0
@@ -137,24 +137,26 @@ def start_video_stream():
     global prev_frame
     while True:
 
-        ret, frame = vs.read()
+        imgRes=urllib.request.urlopen(url)
+        imgnp=np.array(bytearray(imgRes.read()),dtype=np.uint8)
+        frame = cv2.imdecode(imgnp,-1)
 
-        if ret==False:
-            # print("Hell")
-            #Reconnect to camserver after the amount of time
-            if time_wait!=0:
-                if (time.time()-st>5):
-                    time_wait=0
-                    try:
-                        vs=cv2.VideoCapture(url)
-                        time.sleep(5.0)
-                    except:
-                        time_wait=1
-            else:
-                time_wait=1
-                st=time.time()
-                print("Wait")
-            continue
+        # if True:
+        #     # print("Hell")
+        #     #Reconnect to camserver after the amount of time
+        #     if time_wait!=0:
+        #         if (time.time()-st>5):
+        #             time_wait=0
+        #             try:
+        #                 vs=cv2.VideoCapture(url)
+        #                 time.sleep(5.0)
+        #             except:
+        #                 time_wait=1
+        #     else:
+        #         time_wait=1
+        #         st=time.time()
+        #         print("Wait")
+        #     continue
 
         # print("Helooo")
         frame = imutils.resize(frame, width=400)
@@ -190,12 +192,12 @@ def start_video_stream():
         
         fin=1
         time.sleep(0.01)
-    #     cv2.imshow("Test", frame)
-    #     key = cv2.waitKey(1) & 0xFF
+        cv2.imshow("Test", frame)
+        key = cv2.waitKey(1) & 0xFF
 
-    # # if the `q` key was pressed, break from the loop
-    #     if key == ord("q"):
-    #         break
+    # if the `q` key was pressed, break from the loop
+        if key == ord("q"):
+            break
 
 
 
