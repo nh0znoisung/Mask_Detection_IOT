@@ -9,7 +9,7 @@ import serial.tools.list_ports
 
 AIO_FEED_ID = ["btn-start", "log-door", "sensor-light", "swt-light", "btn-authority"]
 AIO_USERNAME = "GodOfThunderK19"
-AIO_KEY = "aio_pENq33jXeZyNS21M6b964HOvs9LB"
+AIO_KEY = "aio_hVNA81gluI7deGkFZK34L7zTRCdX"
 
 AIO_FEED_BUTTON_Start = "btn-start"
 AIO_FEED_SWITCH_Door = "swt-door"
@@ -69,6 +69,7 @@ def getPort():
 
 
 isMicrobitConnected = False
+ser = serial.Serial(port=getPort(), baudrate=115200)
 if getPort() != "None":
     ser = serial.Serial(port=getPort(), baudrate=115200)
     isMicrobitConnected = True
@@ -83,6 +84,7 @@ def processData(data):
 
 mess = ""
 def readSerial():
+    global mess, ser
     bytesToRead = ser.inWaiting()
     if (bytesToRead > 0):
         global mess
@@ -101,24 +103,20 @@ def sendData_Adafruit(splitedData):
     # if splitedData[0] == "btn-start":
     #     client.publish("btn-start",splitedData[1])
     try:
-        match splitedData[0]:
-            case "btn-start":
-                print("Gui thanh cong den " +AIO_FEED_BUTTON_Start)
-                client.publish(AIO_FEED_BUTTON_Start,splitedData[1])
-            case "sensor-light":
-                print("Gui thanh cong den " + AIO_FEED_SENSOR_Light)
-                client.publish(AIO_FEED_SENSOR_Light, splitedData[1])
-            case "swt-light":
-                print("Gui thanh cong den " + AIO_FEED_SWITCH_Light)
-                client.publish(AIO_FEED_SWITCH_Light,splitedData[1])
-            case "swt-door":
-                print("Gui thanh cong den " + AIO_FEED_SWITCH_Door)
-                client.publish(AIO_FEED_SWITCH_Door,splitedData[1])
+        if splitedData[0] == "btn-start":
+            print("Gui thanh cong den " +AIO_FEED_BUTTON_Start)
+            client.publish(AIO_FEED_BUTTON_Start,splitedData[1])
+        elif splitedData[0] == "sensor-light":
+            print("Gui thanh cong den " + AIO_FEED_SENSOR_Light)
+            client.publish(AIO_FEED_SENSOR_Light, splitedData[1])
+        elif splitedData[0] ==   "swt-light":
+            print("Gui thanh cong den " + AIO_FEED_SWITCH_Light)
+            client.publish(AIO_FEED_SWITCH_Light,splitedData[1])
+        elif splitedData[0] == "swt-door":
+            print("Gui thanh cong den " + AIO_FEED_SWITCH_Door)
+            client.publish(AIO_FEED_SWITCH_Door,splitedData[1])
     except:
         pass
-        # case "btn-authority":
-        #     print("Gui thanh cong den " + AIO_FEED_BUTTON_AuthorityDoor)
-        #     client.publish(AIO_FEED_BUTTON_AuthorityDoor,splitedData[1])
 
 
 
@@ -136,12 +134,6 @@ while True:
         count = 1000
         writeData_Microbit()
     else:
-        --count
+        count -= 1
 
     time.sleep(1)
-    #     value = random.randint(0, 100)
-    #     print("Cap nhat:", value)
-    #     client.publish("test-sensor", value)
-    #
-    #     time.sleep(1)
-    # pass

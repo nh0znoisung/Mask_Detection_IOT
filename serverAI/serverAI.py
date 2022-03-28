@@ -1,7 +1,7 @@
 import socket, threading, pickle, struct
 from cv2 import VideoCapture
 from flask import Flask, render_template, request,Response
-
+from flask_cors import CORS
 import cv2,imutils,time
 from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 from tensorflow.keras.preprocessing.image import img_to_array
@@ -79,9 +79,9 @@ def detect_and_predict_mask(frame, faceNet, maskNet):
     return (locs, preds)
 
 app = Flask(__name__)
+CORS(app)
 
-
-url="http://127.0.0.1:5000/video"
+url="https://ef88-115-78-8-83.ngrok.io/video"
 
 
 

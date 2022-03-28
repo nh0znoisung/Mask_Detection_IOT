@@ -25,26 +25,9 @@ export const createRequest = async (req, res) => {
     try {
         const newPost = req.body;
 
-        if(newPost.id == ''){
-            res.status(200).json({ message: "Không được để trống ID nguyên liệu" });
-        }
-
-        if(newPost.name == ''){
-            res.status(200).json({ message: "Không được để trống tên nguyên liệu" });
-        }
-
-        RequestModel.findOne({id: newPost.id}, function(err, obj){
-            if(err) res.status(500).json({message: err.message});
-
-            if(!obj){
-                //Object not found => Add new
-                const post = new RequestModel(newPost);
-                post.save();    
-                res.status(200).json(post);
-            }else{
-                res.status(200).json({ message: "ID của nguyên liệu này đã tồn tại" });
-            }
-        });
+        const post = new RequestModel(newPost);
+        post.save();    
+        res.status(200).json(post);
 
     } catch (error) {
         res.status(500).json({ message: error.message });
