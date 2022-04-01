@@ -60,7 +60,7 @@ function Bulb(props){
 
 const URL_BACKEND = 'http://localhost:5000/'
 const TIMEZONE = "Asia/Ho_Chi_Minh"
-const KEY = "aio_nbXu072Xt4xwZeqkDYUJMCMxi7pi"
+const KEY = "aio_AgWg074IRFfEFP6quOIUQ8ruP5g7"
 
 function convertDate(s){
     // s: string

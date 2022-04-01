@@ -85,7 +85,7 @@ CORS(app)
 
 # url="https://media.w3.org/2010/05/sintel/trailer_hd.mp4"
 # url ="http://192.168.137.96/800x600.mjpeg"
-url ="http://192.168.137.132/800x600.jpg"
+url ="http://192.168.137.119/800x600.jpg"
 
 
 
