@@ -60,7 +60,7 @@ function Bulb(props){
 
 const URL_BACKEND = 'http://localhost:5000/'
 const TIMEZONE = "Asia/Ho_Chi_Minh"
-const KEY = "aio_AgWg074IRFfEFP6quOIUQ8ruP5g7"
+const ADA_KEY = "aio_AgWg074IRFfEFP6quOIUQ8ruP5g7"
 
 function convertDate(s){
     // s: string
@@ -71,11 +71,11 @@ function convertDate(s){
 export default function Main() {
     // Object + timestamp
     const [message, setMessage] = useState([])
-
-    
     const [door, setDoor] = useState('DOOR:CLOSE')
     const [bulb, setBulb] = useState('LIGHT:OFF')
-    
+    const [colorDoor, setColorDoor] = useState('danger')
+    const [colorBulb, setColorBulb] = useState('danger')
+
     useEffect(() => {
 
         axios.get(URL_BACKEND).then(res => {setMessage(res.data)}).catch(err => {console.log(err)})
@@ -89,11 +89,15 @@ export default function Main() {
         let interval = null;
         let data_device;
         interval = setInterval(() => {
-            axios.get(`https://io.adafruit.com/api/v2/GodOfThunderK19/feeds?x-aio-key=` + KEY).then(res => {
+            axios.get(`https://io.adafruit.com/api/v2/GodOfThunderK19/feeds?x-aio-key=` + ADA_KEY).then(res => {
                 data_device = res.data
-                // console.log(data_device)
-                setDoor(data_device.filter(item => item.key === 'swt-door')[0].last_value)
-                setBulb(data_device.filter(item => item.key === 'swt-light')[0].last_value)
+                let newDoor = data_device.filter(item => item.key === 'swt-door')[0].last_value
+                let newBulb = data_device.filter(item => item.key === 'swt-light')[0].last_value
+                setDoor(newDoor)
+                setBulb(newBulb)
+                
+                setColorDoor(newDoor === 'DOOR:OPEN' ? 'success' : 'danger')
+                setColorBulb(newBulb === 'LIGHT:ON' ? 'success' : 'danger')
             }).catch(err => {console.log(err)})
         }, 750); 
         
@@ -117,7 +121,7 @@ export default function Main() {
         axios.post("https://io.adafruit.com/api/v2/GodOfThunderK19/feeds/swt-door/data", {"value": newDoor}, 
         {
             headers: {
-                'X-AIO-Key': KEY
+                'X-AIO-Key': ADA_KEY
             }
         }
         ).catch(err => {console.log(err)})
@@ -136,7 +140,7 @@ export default function Main() {
         await axios.post("https://io.adafruit.com/api/v2/GodOfThunderK19/feeds/swt-light/data", {"value": newBulb},
         {
             headers: {
-                'X-AIO-Key': KEY
+                'X-AIO-Key': ADA_KEY
             }
         }
         ).catch(err => {console.log(err)})
@@ -163,10 +167,9 @@ export default function Main() {
                         <div className='bulb'>State of bulb:  <Bulb option={bulb} /></div>
                     </div>
                     <div className='control'>
-                        <Button variant="danger" className="btn-1" onClick={() => handleDoor()}>Emergency open</Button> 
-                        <input type="checkbox" className="toggle" id="rounded"></input>
-                        <label  data-checked="Manual" className="round" data-unchecked="Auto"></label>  
-                        <Button variant="info" className="btn-1" onClick={() => handleBulb()}>Bulb switcher</Button>
+                        <Button variant={colorDoor} className="btn-1" onClick={() => handleDoor()}>Door Switcher</Button> 
+                        <Button variant={colorDoor} className="btn-1" onClick={() => handleDoor()}>Mask Recognition Switcher</Button> 
+                        <Button variant={colorBulb} className="btn-1" onClick={() => handleBulb()}>Bulb Switcher</Button>
                     </div>
                     <div className='chatbox input'>
                         <div className="title">
