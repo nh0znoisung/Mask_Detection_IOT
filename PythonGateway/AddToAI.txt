@@ -1,0 +1,65 @@
+import sys
+import random
+import time
+import serial.tools.list_ports
+from Adafruit_IO import MQTTClient
+
+AIO_FEED_ID = ["btn-start", "swt-door"]
+AIO_USERNAME = "GodOfThunderK19"
+AIO_KEY = "asdasdasdasd"
+
+AIO_FEED_BUTTON_Start = "btn-start"
+AIO_FEED_SWITCH_Door = "swt-door"
+
+
+
+def connected(client):
+    for feed in AIO_FEED_ID:
+        print("Connected successfully to " + feed)
+        client.subscribe(feed)
+
+
+def subscribe(client, userdata, mid, granted_qos):
+    print("Subscribed successfully.")
+
+
+def disconnected(client):
+    print("Disconnecting.")
+    sys.exit(1)
+
+
+def message(client, feed_id, payload):
+    print("Received data: " + payload)
+    if payload == "START:ON":
+        flag_start = 1
+        print(flag_start)
+        
+
+
+
+client = MQTTClient(AIO_USERNAME, AIO_KEY)
+client.on_connect = connected
+client.on_disconnect = disconnected
+client.on_subscribe = subscribe
+client.on_message = message
+client.connect()
+client.loop_background()
+is_microbit_connected = False
+
+
+
+flag_start = 0
+# print(flag_start)
+
+# def CheckDoor():
+#     global flag_start
+#     if flag_start == 1:
+#         flag_start = 0
+#         print(flag_start)
+client.publish(AIO_FEED_SWITCH_Door, "DOOR:OPEN")
+client.publish(AIO_FEED_BUTTON_Start, "START:OFF")
+
+while True:
+    # CheckDoor()
+    time.sleep(1)
+
