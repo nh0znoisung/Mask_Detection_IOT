@@ -12,4 +12,3 @@ TRAIN_DIR = 'data/RMFRD/train'
 VAL_DIR = 'data/RMFRD/test'
 MODEL_PATH = 'Model'
 CLASS_NAMES = ['without_mask', 'with_mask']
-BUFFER_SIZE = 1000

@@ -8,8 +8,25 @@ from tensorflow.keras.applications import vgg16, resnet_v2, inception_v3, incept
 from preprocess import *
 from dataset import *
 
-train_file_lists = [os.listdir(os.path.join(TRAIN_DIR, i))  for i in CLASS_NAMES]
-test_file_lists = [os.listdir(os.path.join(VAL_DIR, i))  for i in CLASS_NAMES]
+train_file_lists =  [ 
+                        [
+                            os.path.join(j, k) 
+                            for k in os.listdir(TRAIN_DIR, i, j)
+                        ]   
+                        for i in CLASS_NAMES
+                        for j in os.listdir(os.path.join(TRAIN_DIR, i))  
+                        if os.path.isdir(j)
+                    ]
+
+test_file_lists =  [ 
+                        [
+                            os.path.join(j, k) 
+                            for k in os.listdir(VAL_DIR, i, j)
+                        ]   
+                        for i in CLASS_NAMES
+                        for j in os.listdir(os.path.join(VAL_DIR, i))  
+                        if os.path.isdir(j)
+                    ]
 
 train_dataset = (
     tf.data.Dataset.from_generator(
@@ -21,7 +38,6 @@ train_dataset = (
             tf.TensorSpec(shape=(), dtype=tf.float32,)  
         )
     )
-    .shuffle(BUFFER_SIZE)
     .batch(BATCH_SIZE, drop_remainder=True)
     .prefetch(tf.data.experimental.AUTOTUNE)
 )
@@ -34,7 +50,6 @@ train_dataset = (
 #             tf.TensorSpec(shape=(), dtype=tf.float32)  
 #         )
 #     )
-#     .shuffle(BUFFER_SIZE)
 #     .batch(BATCH_SIZE, drop_remainder=True)
 #     .prefetch(tf.data.experimental.AUTOTUNE)
 # )
