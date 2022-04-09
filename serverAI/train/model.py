@@ -1,8 +1,12 @@
 import tensorflow as tf
+from config import *
+from tensorflow.keras.applications import vgg16, resnet_v2, inception_v3, inception_resnet_v2
+import tensorflow.keras.layers as layers
 
 class MDF_Model(tf.keras.Model):
     def __init__(self):
         # Get backbone
+        super().__init__()
         self.backbone = vgg16.VGG16(weights="imagenet", input_shape=IMG_SIZE + (3,), include_top=False) if BACKBONE == 'vgg16'\
                     else resnet_v2.ResNet50V2(weights="imagenet", input_shape=IMG_SIZE + (3,), include_top=False) if BACKBONE == 'ResNet50V2'\
                     else inception_v3.InceptionV3(weights="imagenet", input_shape=IMG_SIZE + (3,), include_top=False) if BACKBONE == 'inception_v3'\

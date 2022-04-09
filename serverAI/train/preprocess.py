@@ -1,3 +1,6 @@
+from tensorflow.keras.applications import vgg16, resnet_v2, inception_v3, inception_resnet_v2
+from config import *
+
 def preprocess_image(image):
   if BACKBONE == 'vgg16':
     image = vgg16.preprocess_input(image)
