@@ -22,7 +22,7 @@ def train_data_generator(pivot_class, file_lists):
             img, label = preprocess(img, idx_class)
 
             idx_list[idx_class] = (idx_list[idx_class]+1) % len(file_lists[idx_class])
-            if idx_class==pivot_class and idx_list[idx_class]==0 and not loop_inf:
+            if idx_class==pivot_class and idx_list[idx_class]==0:
                 break
             idx_class = (idx_class+1)%n_class
 

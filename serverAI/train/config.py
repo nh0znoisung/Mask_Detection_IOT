@@ -1,5 +1,6 @@
 # use one of: vgg16 ResNet50V2 inception_v3 inception_resnet_v2
-BACKBONE = 'ResNet50V2'    
+FEASIBLE_BACKBONE = ['vgg16', 'resnet50v2', 'inception_v3', 'inception_resnet_v2']
+BACKBONE = 'resnet50v2'    
 IMG_SIZE = (224,224)
 
 BATCH_SIZE = 128
