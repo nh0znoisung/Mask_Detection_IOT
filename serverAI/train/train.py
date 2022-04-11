@@ -11,11 +11,40 @@ from metrics import *
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.losses import BinaryCrossentropy
 
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--train_dir', dest='train_dir', type=str,
+    help='train directory', default=None)
+parser.add_argument('--val_dir', dest='val_dir', type=str,
+    help='validation directory', default=None)
+parser.add_argument('--backbone', dest='backbone', type=str,
+    help='model backbone, feasible values are \
+        [vgg16,ResNet50V2,inception_v3, inception_resnet_v2]', 
+    default=None)
+args = parser.parse_args()
+
+if args.train_dir:
+    if os.path.isdir(args.train_dir): TRAIN_DIR = args.train_dir
+    else:
+        print(f"Error: {args.train_dir} is not a folder.")
+        exit()
+if args.val_dir:
+    if os.path.isdir(args.val_dir): VAL_DIR = args.val_dir
+    else:
+        print(f"Error: {args.val_dir} is not a folder.")
+        exit()
+if args.backbone:
+    if args.backbone not in FEASIBLE_BACKBONE:
+        print(f"Error: {args.backbone} is not a feasible backbone.")
+        exit()
+    else: BACKBONE = args.backbone
+
+
 def main():
 
     train_file_lists =  [ 
         [
-            os.path.join(j, k) 
+            os.path.join(TRAIN_DIR, i, os.path.join(j, k))
             for j in os.listdir(os.path.join(TRAIN_DIR, i))  
             for k in os.listdir(os.path.join(TRAIN_DIR, i, j))
             if os.path.isdir(os.path.join(TRAIN_DIR, i, j))
@@ -25,7 +54,7 @@ def main():
 
     test_file_lists =  [ 
         [   
-            os.path.join(j, k) 
+            os.path.join(VAL_DIR, i, os.path.join(j, k))
             for j in os.listdir(os.path.join(VAL_DIR, i)) 
             for k in os.listdir(os.path.join(VAL_DIR, i, j))
             if os.path.isdir(os.path.join(VAL_DIR, i, j))
@@ -75,32 +104,4 @@ def main():
                         verbose=1)
 
 if __name__ == "__main__":
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--train_dir', dest='train_dir', type=str,
-        help='train directory', default=None)
-    parser.add_argument('--val_dir', dest='val_dir', type=str,
-        help='validation directory', default=None)
-    parser.add_argument('--backbone', dest='backbone', type=str,
-        help='model backbone, feasible values are \
-            [vgg16,ResNet50V2,inception_v3, inception_resnet_v2]', 
-        default=None)
-    args = parser.parse_args()
-    
-    if args.train_dir:
-        if os.path.isdir(args.train_dir): TRAIN_DIR = args.train_dir
-        else:
-            print(f"Error: {args.train_dir} is not a folder.")
-            exit()
-    if args.val_dir:
-        if os.path.isdir(args.val_dir): VAL_DIR = args.val_dir
-        else:
-            print(f"Error: {args.val_dir} is not a folder.")
-            exit()
-    if args.backbone:
-        if args.backbone not in FEASIBLE_BACKBONE:
-            print(f"Error: {args.backbone} is not a feasible backbone.")
-            exit()
-        else: BACKBONE = args.backbone
-    
     main()

@@ -13,8 +13,9 @@ def train_data_generator(pivot_class, file_lists):
         idx_class = 0
         while True:
             idx_file = permutation_lists[idx_class][ idx_list[idx_class] ]
-            img_file_name = file_lists[idx_class][idx_file]
-            img_path = os.path.join(TRAIN_DIR, CLASS_NAMES[idx_class], img_file_name)
+            # img_file_name = file_lists[idx_class][idx_file]
+            # img_path = os.path.join(TRAIN_DIR, CLASS_NAMES[idx_class], img_file_name)
+            img_path = file_lists[idx_class][idx_file]
             # print(img_path)
             img = tf.io.read_file(img_path)
             img = tf.image.decode_image(img, channels=3, expand_animations=False)
