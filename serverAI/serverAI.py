@@ -1,7 +1,7 @@
+from glob import glob
 import socket, threading, pickle, struct
 from cv2 import VideoCapture
 from flask import Flask, render_template, request,Response
-from flask_cors import CORS
 import cv2,imutils,time
 from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 from tensorflow.keras.preprocessing.image import img_to_array
@@ -15,6 +15,8 @@ import time
 import cv2
 import os
 import urllib
+import sys
+from Adafruit_IO import MQTTClient
 
 
 def detect_and_predict_mask(frame, faceNet, maskNet):
@@ -80,13 +82,12 @@ def detect_and_predict_mask(frame, faceNet, maskNet):
     return (locs, preds)
 
 app = Flask(__name__)
-CORS(app)
 
 
 # url="https://media.w3.org/2010/05/sintel/trailer_hd.mp4"
 # url ="http://192.168.137.96/800x600.mjpeg"
-url ="http://192.168.137.119/800x600.jpg"
-
+# url ="http://192.168.137.119/800x600.jpg"
+url="http://127.0.0.1:5000/video"
 
 
 global frame
@@ -95,11 +96,15 @@ frame=None
 prev_frame=None
 global fin
 fin=0
-
+is_mask=0
+is_mask_prev=0
 global args
+
 
 def start_video_stream():
     global args
+    global is_mask
+    global is_mask_prev
     ap = argparse.ArgumentParser()
     ap.add_argument("-f", "--face", type=str,
         default="face_detector",
@@ -125,7 +130,7 @@ def start_video_stream():
 
     # initialize the video stream and allow the camera sensor to warm up
     print("[INFO] starting video stream...")
-    # vs=VideoStream(url).start()
+    vs=cv2.VideoCapture(url)
     # Read until video is completed
     # fps=0
     # st=0
@@ -139,26 +144,33 @@ def start_video_stream():
     global prev_frame
     while True:
 
-        imgRes=urllib.request.urlopen(url)
-        imgnp=np.array(bytearray(imgRes.read()),dtype=np.uint8)
-        frame = cv2.imdecode(imgnp,-1)
+        # imgRes=urllib.request.urlopen(url)
+        # imgnp=np.array(bytearray(imgRes.read()),dtype=np.uint8)
+        # frame = cv2.imdecode(imgnp,-1)
+        ret, frame = vs.read()
 
-        # if True:
-        #     # print("Hell")
-        #     #Reconnect to camserver after the amount of time
-        #     if time_wait!=0:
-        #         if (time.time()-st>5):
-        #             time_wait=0
-        #             try:
-        #                 vs=cv2.VideoCapture(url)
-        #                 time.sleep(5.0)
-        #             except:
-        #                 time_wait=1
-        #     else:
-        #         time_wait=1
-        #         st=time.time()
-        #         print("Wait")
-        #     continue
+    #     cv2.imshow("Test", frame)
+    #     key = cv2.waitKey(1) & 0xFF
+
+    # # if the `q` key was pressed, break from the loop
+    #     if key == ord("q"):
+    #         break
+        if ret==False:
+            # print("Hell")
+            #Reconnect to camserver after the amount of time
+            if time_wait!=0:
+                if (time.time()-st>5):
+                    time_wait=0
+                    try:
+                        vs=cv2.VideoCapture(url)
+                        time.sleep(5.0)
+                    except:
+                        time_wait=1
+            else:
+                time_wait=1
+                st=time.time()
+                print("Wait")
+            continue
 
         # print("Helooo")
         frame = imutils.resize(frame, width=400)
@@ -168,7 +180,6 @@ def start_video_stream():
 # detect faces in the frame and determine if they are wearing a
 # face mask or not
         (locs, preds) = detect_and_predict_mask(frame, faceNet, maskNet)
-
     # loop over the detected face locations and their corresponding
     # locations
         for (box, pred) in zip(locs, preds):
@@ -179,6 +190,9 @@ def start_video_stream():
             # determine the class label and color we'll use to draw
             # the bounding box and text
             label = "Mask" if mask > withoutMask else "No Mask"
+            # is_mask_prev=is_mask
+            is_mask=1 if mask > withoutMask else 0
+
             color = (0, 255, 0) if label == "Mask" else (0, 0, 255)
                 
             # include the probability in the label
@@ -193,13 +207,13 @@ def start_video_stream():
         prev_frame=frame
         
         fin=1
-    #     time.sleep(0.01)
-    #     cv2.imshow("Test", frame)
-    #     key = cv2.waitKey(1) & 0xFF
+        time.sleep(0.01)
+        cv2.imshow("Test", frame)
+        key = cv2.waitKey(1) & 0xFF
 
-    # # if the `q` key was pressed, break from the loop
-    #     if key == ord("q"):
-    #         break
+    # if the `q` key was pressed, break from the loop
+        if key == ord("q"):
+            break
 
 
 
@@ -220,6 +234,97 @@ def getimage():
 
 
 
+AIO_FEED_ID = ["btn-start", "swt-door"]
+AIO_USERNAME = "GodOfThunderK19"
+AIO_KEY = "aio_Bjri84FTUnCQls44jumkSbIlSuw3"
+
+AIO_FEED_BUTTON_Start = "btn-start"
+AIO_FEED_SWITCH_Door = "swt-door"
+
+flag_start=0
+time_start=0
+count_mask=0
+count_unmask=0
+time_start=0
+def connected(client):
+    for feed in AIO_FEED_ID:
+        print("Connected successfully to " + feed)
+        client.subscribe(feed)
+
+
+def subscribe(client, userdata, mid, granted_qos):
+    print("Subscribed successfully.")
+
+
+def disconnected(client):
+    print("Disconnecting.")
+    sys.exit(1)
+
+
+def message(client, feed_id, payload):
+    print("Received data: " + payload)
+    global flag_start
+    if payload == "START:ON":
+        flag_start = 1
+        print(flag_start)
+        
+def checkDoor():
+    global flag_start
+    global time_start
+    global count_mask
+    global count_unmask
+    if(flag_start==1):
+        if time_start==0:
+            time_start=time.time()
+        elif time.time()-time_start>9:
+            return 0
+        else:
+            if(is_mask==1):
+                count_mask+=1
+            else:
+                count_mask=0
+            if(count_mask>200):
+                return 1
+    return -1
+
+
+
+def mqttConnect():
+
+    global flag_start
+    global time_start
+    global count_mask
+    global count_unmask
+
+    client = MQTTClient(AIO_USERNAME, AIO_KEY)
+    client.on_connect = connected
+    client.on_disconnect = disconnected
+    client.on_subscribe = subscribe
+    client.on_message = message
+    client.connect()
+    client.loop_background()
+    flag_start = 0
+
+
+    while True:
+        # CheckDoor()
+        re=checkDoor()
+        if (re==0):
+            time_start=0
+            flag_start=0
+            count_mask=0
+            count_unmask=0
+            client.publish(AIO_FEED_SWITCH_Door, "DOOR:CLOSE")
+            client.publish(AIO_FEED_BUTTON_Start, "START:OFF")
+        elif (re==1):
+            time_start=0
+            flag_start=0
+            count_mask=0
+            count_unmask=0
+            client.publish(AIO_FEED_SWITCH_Door, "DOOR:OPEN")
+            client.publish(AIO_FEED_BUTTON_Start, "START:OFF")
+
+        time.sleep(0.01)
 
 @app.route('/video')
 def video_feed():
@@ -233,7 +338,7 @@ if __name__ == "__main__":
 	
 
     threading.Thread(target=start_video_stream, daemon=True).start()
-    
+    threading.Thread(target=mqttConnect, daemon=True).start()
     threading.Thread(target=web, daemon=True).start()
     while True:
         time.sleep(1)
