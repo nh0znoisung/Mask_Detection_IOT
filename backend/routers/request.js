@@ -1,15 +1,16 @@
 import express from 'express';
-import { createRequest, deleteRequest, getRequest, updateRequest, searchIdRequest} from '../controllers/request.js';
+// import { createRequest, deleteRequest, getRequest, updateRequest, searchIdRequest} from '../controllers/request.js';
+import {RequestController} from '../controllers/request.js';
 
 const router = express.Router();
 
 // URL: /api/Request
-router.get('/', getRequest)
-router.post('/', createRequest)
+router.get('/', RequestController.getRequest)
+router.post('/', RequestController.createRequest)
 
-router.get('/:id', searchIdRequest)
+router.get('/:id', RequestController.searchIdRequest)
 
-router.post('/update/:id', updateRequest)
-router.post('/delete/:id', deleteRequest)
+router.post('/update/:id', RequestController.updateRequest)
+router.post('/delete/:id', RequestController.deleteRequest)
 
 export default router;

@@ -23,9 +23,11 @@ function Message(props){
         action = "bật đèn"
     }else if(s.action === 3){
         action = "tắt đèn"
+    }else if(s.action === 4){
+        action = "bật hệ thống nhận diện khuôn mặt"
+    }else if(s.action === 5){
+        action = "tắt hệ thống nhận diện khuôn mặt"
     }
-    // Hệ thống AI đã yêu cầu mở cửa
-    console.log(typeof(s.createdAt))
     return(
         <>
             <div className="message">
@@ -34,17 +36,15 @@ function Message(props){
             </div>
             
         </>
-        
     )
 }
 
-
 function Door(props){
     switch(props.option){
-        case 'DOOR:CLOSE':
-            return <span style={{color: "red"}}>Close</span>
-        case 'DOOR:OPEN':
-            return <span style={{color: "green"}}>OPEN</span>
+        case 'AUTHORITY:OFF':
+            return <span style={{color: "red"}}>OFF</span>
+        case 'AUTHORITY:ON':
+            return <span style={{color: "green"}}>ON</span>
         default:
             return <span style={{color: "blue"}}>SOMETHING WRONG??</span>
     }
@@ -60,7 +60,7 @@ function Bulb(props){
 
 const URL_BACKEND = 'http://localhost:5000/'
 const TIMEZONE = "Asia/Ho_Chi_Minh"
-const ADA_KEY = "aio_AgWg074IRFfEFP6quOIUQ8ruP5g7"
+const ADA_KEY = "aio_HEPK82iCycd8fBUTW5uO8Aoey2tz"
 
 function convertDate(s){
     // s: string
@@ -71,10 +71,13 @@ function convertDate(s){
 export default function Main() {
     // Object + timestamp
     const [message, setMessage] = useState([])
-    const [door, setDoor] = useState('DOOR:CLOSE')
+    const [door, setDoor] = useState('AUTHORITY:OFF')
     const [bulb, setBulb] = useState('LIGHT:OFF')
+    const [mask, setMask] = useState('START:OFF')
+
     const [colorDoor, setColorDoor] = useState('danger')
     const [colorBulb, setColorBulb] = useState('danger')
+    const [colorMask, setColorMask] = useState('danger')
 
     useEffect(() => {
 
@@ -91,13 +94,17 @@ export default function Main() {
         interval = setInterval(() => {
             axios.get(`https://io.adafruit.com/api/v2/GodOfThunderK19/feeds?x-aio-key=` + ADA_KEY).then(res => {
                 data_device = res.data
-                let newDoor = data_device.filter(item => item.key === 'swt-door')[0].last_value
+                let newDoor = data_device.filter(item => item.key === 'btn-authority')[0].last_value
                 let newBulb = data_device.filter(item => item.key === 'swt-light')[0].last_value
+                let newMask = data_device.filter(item => item.key === 'btn-start')[0].last_value
+
                 setDoor(newDoor)
                 setBulb(newBulb)
+                setMask(newMask)
                 
-                setColorDoor(newDoor === 'DOOR:OPEN' ? 'success' : 'danger')
+                setColorDoor(newDoor === 'AUTHORITY:ON' ? 'success' : 'danger')
                 setColorBulb(newBulb === 'LIGHT:ON' ? 'success' : 'danger')
+                setColorMask(newMask === 'START:ON' ? 'success' : 'danger')
             }).catch(err => {console.log(err)})
         }, 750); 
         
@@ -111,14 +118,14 @@ export default function Main() {
     })
 
     async function handleDoor(){
+        let newDoor = (door === 'AUTHORITY:ON') ? 'AUTHORITY:OFF' : 'AUTHORITY:ON'
         let obj = {
             subject: 0,
-            action: 0,
+            action: newDoor === 'AUTHORITY:ON' ? 0 : 1,
             state: 0
         }
         await axios.post(URL_BACKEND, obj).catch(err => {console.log(err)})
-        let newDoor = (door === 'DOOR:OPEN') ? 'DOOR:CLOSE' : 'DOOR:OPEN'
-        axios.post("https://io.adafruit.com/api/v2/GodOfThunderK19/feeds/swt-door/data", {"value": newDoor}, 
+        axios.post("https://io.adafruit.com/api/v2/GodOfThunderK19/feeds/btn-authority/data", {"value": newDoor}, 
         {
             headers: {
                 'X-AIO-Key': ADA_KEY
@@ -130,13 +137,14 @@ export default function Main() {
     }
 
     async function handleBulb(){
+        
+        let newBulb = (bulb === 'LIGHT:OFF') ? 'LIGHT:ON' : 'LIGHT:OFF'
         let obj = {
             subject: 0,
-            action: 2,
+            action: (newBulb === 'LIGHT:ON') ? 2 : 3,
             state: 0
         }
         await axios.post(URL_BACKEND, obj).catch(err => {console.log(err)})
-        let newBulb = (bulb === 'LIGHT:OFF') ? 'LIGHT:ON' : 'LIGHT:OFF'
         await axios.post("https://io.adafruit.com/api/v2/GodOfThunderK19/feeds/swt-light/data", {"value": newBulb},
         {
             headers: {
@@ -147,6 +155,25 @@ export default function Main() {
 
         axios.get(URL_BACKEND).then(res => {setMessage(res.data)}).catch(err => {console.log(err)})
 
+    }
+
+    async function handleMask(){
+        let newMask = (mask === 'START:OFF') ? 'START:ON' : 'START:OFF'
+        let obj = {
+            subject: 0,
+            action: (newMask === 'START:ON') ? 4 : 5,
+            state: 0
+        }
+        await axios.post(URL_BACKEND, obj).catch(err => {console.log(err)})
+        await axios.post("https://io.adafruit.com/api/v2/GodOfThunderK19/feeds/btn-start/data", {"value": newMask},
+        {
+            headers: {
+                'X-AIO-Key': ADA_KEY
+            }
+        }
+        ).catch(err => {console.log(err)})
+
+        axios.get(URL_BACKEND).then(res => {setMessage(res.data)}).catch(err => {console.log(err)})
     }
     return (
         <>
@@ -163,12 +190,12 @@ export default function Main() {
                     <img style={{height: "30vw", width:"54vw"}} alt="Video here" src="http://localhost:9999/video"></img>       
                     {/* </div> */}
                     <div className='info'>
-                        <div className='door'>State of door:  <Door option={door} /></div>
+                        <div className='door'>State of authority:  <Door option={door} /></div>
                         <div className='bulb'>State of bulb:  <Bulb option={bulb} /></div>
                     </div>
                     <div className='control'>
                         <Button variant={colorDoor} className="btn-1" onClick={() => handleDoor()}>Door Switcher</Button> 
-                        <Button variant={colorDoor} className="btn-1" onClick={() => handleDoor()}>Mask Recognition Switcher</Button> 
+                        <Button variant={colorMask} className="btn-1" onClick={() => handleMask()}>Mask Recognition Switcher</Button> 
                         <Button variant={colorBulb} className="btn-1" onClick={() => handleBulb()}>Bulb Switcher</Button>
                     </div>
                     <div className='chatbox input'>

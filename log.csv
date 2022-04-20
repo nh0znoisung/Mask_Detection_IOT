@@ -1,3 +1,140 @@
+commit 28549bbbd0b18d72cf8bf159d00675a321399a43
+Author: nh0znoisung <tuanbo2001@gmail.com>
+Date:   Sun Apr 3 21:00:30 2022 +0700
+
+    update button interface
+
+commit 8e9ee19c4591fbfe57c3a1730b893667f966f229
+Author: PhuLoi-1911545 <luonghuuphuloi11@gmail.com>
+Date:   Sun Apr 3 19:56:23 2022 +0700
+
+    add func AI connect Ada
+
+commit d354a9c4b9636348d0eb76a2371fb1683c7e2363
+Author: PhuLoi-1911545 <luonghuuphuloi11@gmail.com>
+Date:   Fri Apr 1 13:08:49 2022 +0700
+
+    Static IP for camera
+
+commit 38f53e541dfe5a9cb7221052e395056b951e0a9f
+Merge: b6e7860 ea04700
+Author: nh0znoisung <tuanbo2001@gmail.com>
+Date:   Mon Mar 28 22:57:57 2022 +0700
+
+    Update new variable
+
+commit b6e7860ed2a90384b0f69e46ee5ca1dbde3de44f
+Author: nh0znoisung <tuanbo2001@gmail.com>
+Date:   Mon Mar 28 22:56:28 2022 +0700
+
+    update new variable feed
+
+commit ea047007ade3495663fa1482716630c4eab761a4
+Author: PhuLoi-1911545 <luonghuuphuloi11@gmail.com>
+Date:   Mon Mar 28 21:31:16 2022 +0700
+
+    Update Gateway & Microbit
+    
+    Fix Gateway:  Port connection, Data format, Adafruit KEY
+    Microbit: Data receive, Led function, Door function
+
+commit 66050baf15c75e57b981f4cb3fad2ae8ae2a2f1f
+Author: PhuLoi-1911545 <luonghuuphuloi11@gmail.com>
+Date:   Mon Mar 28 15:24:26 2022 +0700
+
+    Change name port
+
+commit 6b4175320bd5a51c22b0d4b25ef5ab4426b14146
+Author: PhuLoi-1911545 <luonghuuphuloi11@gmail.com>
+Date:   Mon Mar 28 15:03:21 2022 +0700
+
+    update Gateway
+    
+    Chinh lai du lieu ghi nhan
+
+commit e2f9d7c3df6016c87a55e89107ee75ff3c3be91c
+Author: PhuLoi-1911545 <luonghuuphuloi11@gmail.com>
+Date:   Mon Mar 28 14:14:20 2022 +0700
+
+    Update new  Arduino
+
+commit 381f39df6616bd92f20a4861837318a6e1566380
+Author: PhuLoi-1911545 <luonghuuphuloi11@gmail.com>
+Date:   Mon Mar 28 14:09:35 2022 +0700
+
+    Complete Web & Camera
+
+commit 6105087242e8de92bab188d96b6fcbb4282bcefc
+Merge: d779de2 09aad07
+Author: nh0znoisung <tuanbo2001@gmail.com>
+Date:   Mon Mar 28 13:28:35 2022 +0700
+
+    Update frontend
+
+commit d779de220e834a591445398a3e7e3b7c0a2487ba
+Merge: f119f9f 2af0996
+Author: nh0znoisung <tuanbo2001@gmail.com>
+Date:   Mon Mar 28 13:27:26 2022 +0700
+
+    Update frontend
+
+commit 09aad075c6ca798ac8e77276d93bedbcd612ba33
+Author: PhuLoi-1911545 <luonghuuphuloi11@gmail.com>
+Date:   Mon Mar 28 13:24:52 2022 +0700
+
+    AI connected Camera
+
+commit f119f9f159426a06e1afd3509c1c248b384239b5
+Author: nh0znoisung <tuanbo2001@gmail.com>
+Date:   Mon Mar 28 13:23:33 2022 +0700
+
+    Push update front-end
+
+commit 2af0996bf14aa3a8b79597b58d4a871f2330f172
+Merge: cea87fa 55d1e8b
+Author: PhuLoi-1911545 <luonghuuphuloi11@gmail.com>
+Date:   Fri Mar 25 11:19:52 2022 +0700
+
+    Merge branch 'main' of https://github.com/nh0znoisung/Mask_Detection_IOT
+
+commit cea87fa6f16bd67ba1a7f8b40836ddff97a460ac
+Author: PhuLoi-1911545 <luonghuuphuloi11@gmail.com>
+Date:   Fri Mar 25 11:19:50 2022 +0700
+
+    update arduino (testing)
+
+commit 638e92e59eb61c4019893153184c9025859bc9da
+Merge: 9c21102 55d1e8b
+Author: nh0znoisung <tuanbo2001@gmail.com>
+Date:   Fri Mar 25 10:54:39 2022 +0700
+
+    Merge branch 'main' of https://github.com/nh0znoisung/Mask_Detection_IOT
+
+commit 55d1e8bf49162f8854431d5e1cecc98e142212ce
+Author: danhkaito <danh.kaitokid@gmail.com>
+Date:   Fri Mar 25 10:53:06 2022 +0700
+
+    Server AI
+
+commit 9c21102fcf423370a9eb4aaa18e150169aec5e08
+Merge: 3f74683 9487af0
+Author: nh0znoisung <tuanbo2001@gmail.com>
+Date:   Fri Mar 25 10:38:56 2022 +0700
+
+    Merge branch 'main' of https://github.com/nh0znoisung/Mask_Detection_IOT
+
+commit 3f74683a3622bdf35a32b0feab5917d72dca26dc
+Author: nh0znoisung <tuanbo2001@gmail.com>
+Date:   Thu Mar 24 17:44:02 2022 +0700
+
+    Push gitlog
+
+commit 9487af0d33cb32b63872d23c6971774d43cc333e
+Author: PhuLoi-1911545 <luonghuuphuloi11@gmail.com>
+Date:   Tue Mar 22 20:21:27 2022 +0700
+
+    update esp32 & Gateway
+
 commit 11405d79c877c14af14209e9de1c888995074f88
 Author: nh0znoisung <tuanbo2001@gmail.com>
 Date:   Tue Mar 22 17:33:27 2022 +0700
