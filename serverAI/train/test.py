@@ -1,48 +1,98 @@
-import cv2
-import numpy as np
-from keras.models import load_model
+import os
+from config import *
+import tensorflow as tf
+import argparse
+import pickle
 
-# loss: 0.1910 - acc: 0.9258 - val_loss: 0.1360 - val_acc: 0.9510
-model = load_model("./model2-008.model")
-results = {0: 'without mask', 1: 'mask'}
-GR_dict = {0: (0, 0, 255), 1: (0, 255, 0)}
-rect_size = 4
-cap = cv2.VideoCapture(0)
-haarcascade = cv2.CascadeClassifier(
-    cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
-i = 0
+from model import MDF_Model
+from preprocess import *
+from dataset import *
+from metrics import *
 
-while True:
-    (rval, im) = cap.read()
-    im = cv2.flip(im, 1, 1)
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.losses import BinaryCrossentropy
 
-    rerect_size = cv2.resize(
-        im, (im.shape[1] // rect_size, im.shape[0] // rect_size))
-    faces = haarcascade.detectMultiScale(rerect_size)
-    for f in faces:
-        (x, y, w, h) = [v * rect_size for v in f]
 
-        face_img = im[y:y+h, x:x+w]
-        rerect_sized = cv2.resize(face_img, (150, 150))
-        normalized = rerect_sized/255.0
-        reshaped = np.reshape(normalized, (1, 150, 150, 3))
-        reshaped = np.vstack([reshaped])
-        result = model.predict(reshaped)
+parser = argparse.ArgumentParser()
+parser.add_argument('--train_dir', dest='train_dir', type=str,
+    help='train directory', default=None)
+parser.add_argument('--val_dir', dest='val_dir', type=str,
+    help='validation directory', default=None)
+parser.add_argument('--backbone', dest='backbone', type=str,
+    help='model backbone, feasible values are \
+        [vgg16,resnet50v2,inception_v3, inception_resnet_v2]', 
+    default=None)
+args = parser.parse_args()
 
-        label = np.argmax(result, axis=1)[0]
+if args.train_dir:
+    if os.path.isdir(args.train_dir): TRAIN_DIR = args.train_dir
+    else:
+        print(f"Error: {args.train_dir} is not a folder.")
+        exit()
+if args.val_dir:
+    if os.path.isdir(args.val_dir): VAL_DIR = args.val_dir
+    else:
+        print(f"Error: {args.val_dir} is not a folder.")
+        exit()
+if args.backbone:
+    if args.backbone not in FEASIBLE_BACKBONE:
+        print(f"Error: {args.backbone} is not a feasible backbone.")
+        exit()
+    else: BACKBONE = args.backbone
 
-        # if label == 1:
-        #     cv2.imwrite('masked_me/'+str(i)+'.jpg', im)
-        #     i += 1
 
-        cv2.rectangle(im, (x, y), (x+w, y+h), GR_dict[label], 2)
-        cv2.rectangle(im, (x, y-40), (x+w, y), GR_dict[label], -1)
-        cv2.putText(im, results[label], (x, y-10),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2)
-    cv2.imshow('LIVE',   im)
-    key = cv2.waitKey(10)
+def main():
+    test_file_lists =  [ 
+        [   
+            os.path.join(VAL_DIR, i, os.path.join(j, k))
+            for j in os.listdir(os.path.join(VAL_DIR, i)) 
+            for k in os.listdir(os.path.join(VAL_DIR, i, j))
+            if os.path.isdir(os.path.join(VAL_DIR, i, j))
+        ]  
+        for i in CLASS_NAMES
+    ]
 
-    if key == 27:
-        break
-cap.release()
-cv2.destroyAllWindows()
+    test_dataset = (
+        tf.data.Dataset.from_generator(
+            test_data_generator(1, test_file_lists),
+            output_signature = (
+                tf.TensorSpec(shape=(IMG_SIZE[0], IMG_SIZE[1], 3), dtype=tf.float32), 
+                tf.TensorSpec(shape=(), dtype=tf.float32)  
+            )
+        )
+        .batch(BATCH_SIZE, drop_remainder=False)
+        .prefetch(tf.data.experimental.AUTOTUNE)
+    )
+
+    print("COMPLETE PREPARING DATASET.")
+
+    model = tf.keras.models.load_model('./ckpts/resnet50v2/', 
+        custom_objects={'recall_m': recall_m, 'precision_m': precision_m, 'f1_m': f1_m})
+    print("COMPLETE LOADING MODEL.")
+
+    # model = MDF_Model()
+    # model.build(input_shape = (None, IMG_SIZE[0], IMG_SIZE[1], 3) )
+    # model.compile(optimizer=Adam(LR),
+    #             loss = BinaryCrossentropy(), 
+    #             metrics = ['accuracy', precision_m, recall_m, f1_m])
+    # model.load_weights('./ckpts/resnet50v2/')
+    
+    # for i,j in test_data_generator(1, test_file_lists)():
+    pred_pos = 0
+    true_pos = 0
+    pos = 0
+    # i,j = [(i,j) for i,j in test_dataset.take(1)][0]
+    # for i,j in test_dataset:
+    #     y = model.predict(i)
+    #     y = np.round(y[:,0])
+    #     j = j.numpy()
+    #     true_pos += sum(y*j)
+    #     pred_pos += sum(y)
+    #     pos += sum(j)
+
+    print(true_pos, pred_pos, pos)
+    result = model.evaluate(test_dataset, verbose=1)
+    print(dict(zip(model.metrics_names, result)))
+    
+if __name__ == "__main__":
+    main()

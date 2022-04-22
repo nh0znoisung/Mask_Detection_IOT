@@ -2,12 +2,15 @@ import os
 from config import *
 import tensorflow as tf
 import argparse
+import pickle
 
 from model import MDF_Model
 from preprocess import *
 from dataset import *
 from metrics import *
+from time import time
 
+from callbacks import F1History
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.losses import BinaryCrossentropy
 
@@ -41,6 +44,7 @@ if args.backbone:
 
 
 def main():
+    start = time()
 
     train_file_lists =  [ 
         [
@@ -72,36 +76,62 @@ def main():
                 tf.TensorSpec(shape=(), dtype=tf.float32,)  
             )
         )
-        .batch(BATCH_SIZE, drop_remainder=True)
+        .batch(BATCH_SIZE, drop_remainder=False)
         .prefetch(tf.data.experimental.AUTOTUNE)
     )
 
     test_dataset = (
         tf.data.Dataset.from_generator(
-            test_data_generator(1, test_file_lists),
+            test_data_generator(1, test_file_lists, max_it=None),
             output_signature = (
                 tf.TensorSpec(shape=(IMG_SIZE[0], IMG_SIZE[1], 3), dtype=tf.float32), 
                 tf.TensorSpec(shape=(), dtype=tf.float32)  
             )
         )
-        .batch(BATCH_SIZE, drop_remainder=True)
+        .batch(BATCH_SIZE, drop_remainder=False)
         .prefetch(tf.data.experimental.AUTOTUNE)
     )
 
 
-    print("COMPLETE PREPARING DATASET.")
+    print(f"COMPLETE PREPARING DATASET IN {time()-start}s.")
+    start=time()
 
     model = MDF_Model()
     model.build(input_shape = (None, IMG_SIZE[0], IMG_SIZE[1], 3) )
     model.summary()
     model.compile(optimizer=Adam(LR),
                 loss = BinaryCrossentropy(), 
-                metrics = ['accuracy', precision_m, recall_m, f1_m])
+                # metrics = ['accuracy', precision_m, recall_m, f1_m]
+                )
+    
+    ckpt_dir = f'./ckpts/{BACKBONE}'
+    
+    if not os.path.isdir(ckpt_dir):
+        os.makedirs(ckpt_dir)
+    
+    model_checkpoint_callback=tf.keras.callbacks.ModelCheckpoint(
+        ckpt_dir,
+        monitor='val_f1',
+        verbose=1,
+        save_best_only=True,
+        save_weights_only=False,
+        mode='max',
+        save_freq='epoch',
+    )
+    
+    callback_his = F1History(test_dataset)
     history = model.fit(train_dataset,
-                        validation_data=test_dataset,
-                        steps_per_epoch=STEPS_PER_EPOCH,
-                        epochs=EPOCHS,
-                        verbose=1)
+        validation_data=test_dataset,
+        steps_per_epoch=STEPS_PER_EPOCH,
+        epochs=EPOCHS,
+        verbose=1,
+        callbacks=[callback_his, model_checkpoint_callback]
+    )
+    
+    print(f"DONE TRAINING MODEL IN {time()-start}s.")
+    
+    history_name = f'history.pkl'
+    pickle.dump(callback_his.history, open(os.path.join(ckpt_dir, history_name), 'wb'))
 
 if __name__ == "__main__":
     main()

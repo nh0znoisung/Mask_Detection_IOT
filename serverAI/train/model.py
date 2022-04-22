@@ -15,9 +15,9 @@ class MDF_Model(tf.keras.Model):
         )
         self.pipeline = [
             layers.Flatten(),
-            layers.Dense(512, activation="relu"),
-            layers.BatchNormalization(),
             layers.Dense(256, activation="relu"),
+            layers.BatchNormalization(),
+            layers.Dense(128, activation="relu"),
             layers.BatchNormalization(),
             layers.Dense(1, activation='sigmoid')
         ]
