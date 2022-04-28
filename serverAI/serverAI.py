@@ -1,4 +1,5 @@
 import socket, threading, pickle, struct
+from urllib.request import urlopen
 from cv2 import VideoCapture
 from flask import Flask, render_template, request,Response
 import cv2,imutils,time
@@ -15,6 +16,7 @@ import argparse
 import os
 import urllib
 import sys
+import requests
 from Adafruit_IO import MQTTClient
 
 
@@ -84,8 +86,19 @@ app = Flask(__name__)
 
 
 # url="https://media.w3.org/2010/05/sintel/trailer_hd.mp4"
-# url ="http://192.168.137.75/800x600.mjpeg"
-url ="http://192.168.137.75/800x600.jpg"
+url ="http://192.168.137.75/800x600.mjpeg"
+# 
+
+
+# url ="http://192.168.137.75/800x600.jpg"
+# url ="http://192.168.137.75/1280x720.jpg"
+# url2 ="http://192.168.137.75/480x320.jpg"
+# url ="http://192.168.137.75/320x240.jpg"
+
+
+
+
+
 # url="http://192.169.137.75:5000/video"
 
 
@@ -147,7 +160,27 @@ def start_video_stream():
     global fin
     global frame
     global prev_frame
-    while True:
+
+    
+    
+    r = requests.get(url, auth=('user', 'password'), stream=True)
+    # r = urllib.request.urlopen(url)
+    if(r.status_code == 200):
+        tmp = bytes()
+        for chunk in r.iter_content(chunk_size=1024):
+            tmp += chunk
+            a = tmp.find(b'\xff\xd8')
+            b = tmp.find(b'\xff\xd9')
+            if a != -1 and b != -1:
+                jpg = tmp[a:b+2]
+                tmp = tmp[b+2:]
+                frame = cv2.imdecode(np.fromstring(jpg, dtype=np.uint8), cv2.IMREAD_COLOR)
+                # cv2.imshow('i', frame)
+                if cv2.waitKey(1) == 27:
+                    exit(0)
+                frame = imutils.resize(frame, width=400)
+
+    # while True:
 
         # imgRes=urllib.request.urlopen(url)
         # imgnp=np.array(bytearray(imgRes.read()),dtype=np.uint8)
@@ -155,73 +188,175 @@ def start_video_stream():
 
 
 
-        ret, frame = vs.read()
+        # ret, frame = vs.read()
 
-        cv2.imshow("Test", frame)
-        key = cv2.waitKey(1) & 0xFF
+        # cv2.imshow("Test", frame)
+        # key = cv2.waitKey(1) & 0xFF
 
     # if the `q` key was pressed, break from the loop
-        if key == ord("q"):
-            break
-        if ret==False:
-            # print("Hell")
-            #Reconnect to camserver after the amount of time
-            if time_wait!=0:
-                if (time.time()-st>5):
-                    time_wait=0
-                    try:
-                        vs=cv2.VideoCapture(url)
-                        time.sleep(5.0)
-                    except:
-                        time_wait=1
-            else:
-                time_wait=1
-                st=time.time()
-                print("Wait")
-            continue
+        # if key == ord("q"):
+        #     break
+        # if ret==False:
+        #     # print("Hell")
+        #     #Reconnect to camserver after the amount of time
+        #     if time_wait!=0:
+        #         if (time.time()-st>5):
+        #             time_wait=0
+        #             try:
+        #                 vs=cv2.VideoCapture(url)
+        #                 time.sleep(5.0)
+        #             except:
+        #                 time_wait=1
+        #     else:
+        #         time_wait=1
+        #         st=time.time()
+        #         print("Wait")
+        #     continue
 
-        print("Helooo")
-        frame = imutils.resize(frame, width=400)
+        # print("Helooo")
+        # frame = imutils.resize(frame, width=400)
+
 
 
 
 # detect faces in the frame and determine if they are wearing a
 # face mask or not
-        (locs, preds) = detect_and_predict_mask(frame, faceNet, maskNet)
-    # loop over the detected face locations and their corresponding
-    # locations
-        for (box, pred) in zip(locs, preds):
-            # unpack the bounding box and predictions
-            (startX, startY, endX, endY) = box
-            (mask, withoutMask) = pred
+                (locs, preds) = detect_and_predict_mask(frame, faceNet, maskNet)
+            # loop over the detected face locations and their corresponding
+            # locations
+                for (box, pred) in zip(locs, preds):
+                    # unpack the bounding box and predictions
+                    (startX, startY, endX, endY) = box
+                    (mask, withoutMask) = pred
 
-            # determine the class label and color we'll use to draw
-            # the bounding box and text
-            label = "Mask" if mask > withoutMask else "No Mask"
-            # is_mask_prev=is_mask
-            is_mask=1 if mask > withoutMask else 0
+                    # determine the class label and color we'll use to draw
+                    # the bounding box and text
+                    label = "Mask" if mask > withoutMask else "No Mask"
+                    # is_mask_prev=is_mask
+                    is_mask=1 if mask > withoutMask else 0
 
-            color = (0, 255, 0) if label == "Mask" else (0, 0, 255)
+                    color = (0, 255, 0) if label == "Mask" else (0, 0, 255)
+                        
+                    # include the probability in the label
+                    label = "{}: {:.2f}%".format(label, max(mask, withoutMask) * 100)
+
+                    # display the label and bounding box rectangle on the output
+                    # frame
+                    cv2.putText(frame, label, (startX, startY - 10),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.45, color, 2)
+                    cv2.rectangle(frame, (startX, startY), (endX, endY), color, 2)
+                frame = imutils.resize(frame, width=1000)
+                prev_frame=frame
                 
-            # include the probability in the label
-            label = "{}: {:.2f}%".format(label, max(mask, withoutMask) * 100)
+                fin=1
+                # time.sleep(0.01)
+                cv2.imshow("Test", frame)
+                key = cv2.waitKey(1) & 0xFF
 
-            # display the label and bounding box rectangle on the output
-            # frame
-            cv2.putText(frame, label, (startX, startY - 10),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.45, color, 2)
-            cv2.rectangle(frame, (startX, startY), (endX, endY), color, 2)
-        frame = imutils.resize(frame, width=1000)
-        prev_frame=frame
+            # if the `q` key was pressed, break from the loop
+                if key == ord("q"):
+                    break
+
+    
+    
+    
+    
+#     while True:
+#         # r = requests.get(url, auth=('user', 'password'), stream=True)
+#         # # r = urllib.request.urlopen(url)
+#         # if(r.status_code == 200):
+#         #     tmp = bytes()
+#         #     for chunk in r.iter_content(chunk_size=1024):
+#         #         tmp += chunk
+#         #     a = tmp.find(b'\xff\xd8')
+#         #     b = tmp.find(b'\xff\xd9')
+#         #     if a != -1 and b != -1:
+#         #         jpg = tmp[a:b+2]
+#         #         tmp = tmp[b+2:]
+#         #         frame = cv2.imdecode(np.fromstring(jpg, dtype=np.uint8), cv2.IMREAD_COLOR)
+
+
+#                     # cv2.imshow('i', frametmp)
+#                     # if cv2.waitKey(1) == 27:
+#                     #     exit(0)
+#         # else:
+#         #     print("Received unexpected status code {}".format(r.status_code))
+
+
+#         # imgRes=urllib.request.urlopen(url)
+#         # imgnp=np.array(bytearray(imgRes.read()),dtype=np.uint8)
+#         # frame = cv2.imdecode(imgnp,-1)
         
-        fin=1
-        # time.sleep(0.01)
-        cv2.imshow("Test", frame)
-        key = cv2.waitKey(1) & 0xFF
+        
+        
+        
+#         # ret, frame = vs.read()
 
-    # if the `q` key was pressed, break from the loop
-        if key == ord("q"):
-            break
+#     #     cv2.imshow("Test", frame)
+#     #     key = cv2.waitKey(1) & 0xFF
+
+#     # # if the `q` key was pressed, break from the loop
+#     #     if key == ord("q"):
+#     #         break
+#         # if ret==False:
+#         #     # print("Hell")
+#         #     #Reconnect to camserver after the amount of time
+#         #     if time_wait!=0:
+#         #         if (time.time()-st>5):
+#         #             time_wait=0
+#         #             try:
+#         #                 vs=cv2.VideoCapture(url)
+#         #                 time.sleep(5.0)
+#         #             except:
+#         #                 time_wait=1
+#         #     else:
+#         #         time_wait=1
+#         #         st=time.time()
+#         #         print("Wait")
+#         #     continue
+
+#         # print("Helooo")
+#         frame = imutils.resize(frame, width=400)
+
+
+
+# # detect faces in the frame and determine if they are wearing a
+# # face mask or not
+#         (locs, preds) = detect_and_predict_mask(frame, faceNet, maskNet)
+#     # loop over the detected face locations and their corresponding
+#     # locations
+#         for (box, pred) in zip(locs, preds):
+#             # unpack the bounding box and predictions
+#             (startX, startY, endX, endY) = box
+#             (mask, withoutMask) = pred
+
+#             # determine the class label and color we'll use to draw
+#             # the bounding box and text
+#             label = "Mask" if mask > withoutMask else "No Mask"
+#             # is_mask_prev=is_mask
+#             is_mask=1 if mask > withoutMask else 0
+
+#             color = (0, 255, 0) if label == "Mask" else (0, 0, 255)
+                
+#             # include the probability in the label
+#             label = "{}: {:.2f}%".format(label, max(mask, withoutMask) * 100)
+
+#             # display the label and bounding box rectangle on the output
+#             # frame
+#             cv2.putText(frame, label, (startX, startY - 10),
+#                 cv2.FONT_HERSHEY_SIMPLEX, 0.45, color, 2)
+#             cv2.rectangle(frame, (startX, startY), (endX, endY), color, 2)
+#         frame = imutils.resize(frame, width=1000)
+#         prev_frame=frame
+        
+#         fin=1
+#         # time.sleep(0.01)
+#         cv2.imshow("Test", frame)
+#         key = cv2.waitKey(1) & 0xFF
+
+#     # if the `q` key was pressed, break from the loop
+#         if key == ord("q"):
+#             break
 
 
 
@@ -244,7 +379,10 @@ def getimage():
 
 AIO_FEED_ID = ["btn-start", "swt-door"]
 AIO_USERNAME = "GodOfThunderK19"
-AIO_KEY = ""
+
+AIO_KEY = "aio_MxXv480CDtLjahsm60zjaYmTxFRY"
+
+
 
 AIO_FEED_BUTTON_Start = "btn-start"
 AIO_FEED_SWITCH_Door = "swt-door"
@@ -346,7 +484,7 @@ if __name__ == "__main__":
 	
 
     threading.Thread(target=start_video_stream, daemon=True).start()
-    threading.Thread(target=mqttConnect, daemon=True).start()
-    threading.Thread(target=web, daemon=True).start()
+    # threading.Thread(target=mqttConnect, daemon=True).start()
+    # threading.Thread(target=web, daemon=True).start()
     while True:
         time.sleep(1)
