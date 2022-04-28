@@ -3,9 +3,12 @@ from urllib.request import urlopen
 from cv2 import VideoCapture
 from flask import Flask, render_template, request,Response
 import cv2,imutils,time
-from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
+from tensorflow.keras.applications.vgg16 import preprocess_input
 from tensorflow.keras.preprocessing.image import img_to_array
-from tensorflow.keras.models import load_model
+# from tensorflow.keras.models import load_model
+import tensorflow as tf
+from metrics import *
+
 import pyshine as ps
 from imutils.video import VideoStream
 import numpy as np
@@ -135,11 +138,17 @@ def start_video_stream():
 
     # load the face mask detector model from disk
     print("[INFO] loading face mask detector model...")
-    maskNet = load_model(args["model"])
+
+    # maskNet = load_model(args["model"])
+
+    maskNet = tf.keras.models.load_model('./ckpt/vgg16/', 
+    custom_objects={'recall_m': recall_m, 'precision_m': precision_m, 'f1_m': f1_m})
+    print("COMPLETE LOADING MODEL.")
+
 
     # initialize the video stream and allow the camera sensor to warm up
     print("[INFO] starting video stream...")
-    # vs=cv2.VideoCapture(url)
+    vs=cv2.VideoCapture(0)
     # Read until video is completed
     # fps=0
     # st=0
@@ -151,6 +160,7 @@ def start_video_stream():
     global fin
     global frame
     global prev_frame
+
     
     
     r = requests.get(url, auth=('user', 'password'), stream=True)
@@ -169,6 +179,43 @@ def start_video_stream():
                 if cv2.waitKey(1) == 27:
                     exit(0)
                 frame = imutils.resize(frame, width=400)
+
+    # while True:
+
+        # imgRes=urllib.request.urlopen(url)
+        # imgnp=np.array(bytearray(imgRes.read()),dtype=np.uint8)
+        # frame = cv2.imdecode(imgnp,-1)
+
+
+
+        # ret, frame = vs.read()
+
+        # cv2.imshow("Test", frame)
+        # key = cv2.waitKey(1) & 0xFF
+
+    # if the `q` key was pressed, break from the loop
+        # if key == ord("q"):
+        #     break
+        # if ret==False:
+        #     # print("Hell")
+        #     #Reconnect to camserver after the amount of time
+        #     if time_wait!=0:
+        #         if (time.time()-st>5):
+        #             time_wait=0
+        #             try:
+        #                 vs=cv2.VideoCapture(url)
+        #                 time.sleep(5.0)
+        #             except:
+        #                 time_wait=1
+        #     else:
+        #         time_wait=1
+        #         st=time.time()
+        #         print("Wait")
+        #     continue
+
+        # print("Helooo")
+        # frame = imutils.resize(frame, width=400)
+
 
 
 
@@ -332,7 +379,10 @@ def getimage():
 
 AIO_FEED_ID = ["btn-start", "swt-door"]
 AIO_USERNAME = "GodOfThunderK19"
+
 AIO_KEY = "aio_MxXv480CDtLjahsm60zjaYmTxFRY"
+
+
 
 AIO_FEED_BUTTON_Start = "btn-start"
 AIO_FEED_SWITCH_Door = "swt-door"
