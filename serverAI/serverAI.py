@@ -2,9 +2,12 @@ import socket, threading, pickle, struct
 from cv2 import VideoCapture
 from flask import Flask, render_template, request,Response
 import cv2,imutils,time
-from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
+from tensorflow.keras.applications.vgg16 import preprocess_input
 from tensorflow.keras.preprocessing.image import img_to_array
-from tensorflow.keras.models import load_model
+# from tensorflow.keras.models import load_model
+import tensorflow as tf
+from metrics import *
+
 import pyshine as ps
 from imutils.video import VideoStream
 import numpy as np
@@ -122,7 +125,13 @@ def start_video_stream():
 
     # load the face mask detector model from disk
     print("[INFO] loading face mask detector model...")
-    maskNet = load_model(args["model"])
+
+    # maskNet = load_model(args["model"])
+
+    maskNet = tf.keras.models.load_model('./ckpt/vgg16/', 
+    custom_objects={'recall_m': recall_m, 'precision_m': precision_m, 'f1_m': f1_m})
+    print("COMPLETE LOADING MODEL.")
+
 
     # initialize the video stream and allow the camera sensor to warm up
     print("[INFO] starting video stream...")
@@ -232,7 +241,7 @@ def getimage():
 
 AIO_FEED_ID = ["btn-start", "swt-door"]
 AIO_USERNAME = "GodOfThunderK19"
-AIO_KEY = "aio_HEPK82iCycd8fBUTW5uO8Aoey2tz"
+AIO_KEY = ""
 
 AIO_FEED_BUTTON_Start = "btn-start"
 AIO_FEED_SWITCH_Door = "swt-door"
