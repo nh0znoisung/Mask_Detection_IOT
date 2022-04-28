@@ -135,7 +135,7 @@ def start_video_stream():
 
     # initialize the video stream and allow the camera sensor to warm up
     print("[INFO] starting video stream...")
-    # vs=cv2.VideoCapture(url)
+    vs=cv2.VideoCapture(0)
     # Read until video is completed
     # fps=0
     # st=0
@@ -149,35 +149,38 @@ def start_video_stream():
     global prev_frame
     while True:
 
-        imgRes=urllib.request.urlopen(url)
-        imgnp=np.array(bytearray(imgRes.read()),dtype=np.uint8)
-        frame = cv2.imdecode(imgnp,-1)
-        # ret, frame = vs.read()
+        # imgRes=urllib.request.urlopen(url)
+        # imgnp=np.array(bytearray(imgRes.read()),dtype=np.uint8)
+        # frame = cv2.imdecode(imgnp,-1)
 
-    #     cv2.imshow("Test", frame)
-    #     key = cv2.waitKey(1) & 0xFF
 
-    # # if the `q` key was pressed, break from the loop
-    #     if key == ord("q"):
-    #         break
-        # if ret==False:
-        #     # print("Hell")
-        #     #Reconnect to camserver after the amount of time
-        #     if time_wait!=0:
-        #         if (time.time()-st>5):
-        #             time_wait=0
-        #             try:
-        #                 vs=cv2.VideoCapture(url)
-        #                 time.sleep(5.0)
-        #             except:
-        #                 time_wait=1
-        #     else:
-        #         time_wait=1
-        #         st=time.time()
-        #         print("Wait")
-        #     continue
 
-        # print("Helooo")
+        ret, frame = vs.read()
+
+        cv2.imshow("Test", frame)
+        key = cv2.waitKey(1) & 0xFF
+
+    # if the `q` key was pressed, break from the loop
+        if key == ord("q"):
+            break
+        if ret==False:
+            # print("Hell")
+            #Reconnect to camserver after the amount of time
+            if time_wait!=0:
+                if (time.time()-st>5):
+                    time_wait=0
+                    try:
+                        vs=cv2.VideoCapture(url)
+                        time.sleep(5.0)
+                    except:
+                        time_wait=1
+            else:
+                time_wait=1
+                st=time.time()
+                print("Wait")
+            continue
+
+        print("Helooo")
         frame = imutils.resize(frame, width=400)
 
 
