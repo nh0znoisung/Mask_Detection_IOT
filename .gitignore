@@ -1,5 +1,6 @@
 .ipynb_checkpoints
 data
 __pycache__
-ckpts
+ckpt
 Model
+venv
