@@ -34,7 +34,20 @@ function Bulb(props){
     }else{
         return <span style={{color: "#FFC300"}}>On</span>
     }
+<<<<<<< Updated upstream
     
+=======
+}
+
+const URL_BACKEND = 'http://localhost:5000/'
+const TIMEZONE = "Asia/Ho_Chi_Minh"
+const ADA_KEY = "aio_uTad06JQBJ5bWlXwstpYX1NEKE1l"
+
+function convertDate(s){
+    // s: string
+    let date = moment(s)
+    return date.tz(TIMEZONE).format('h:mm:ss A, DD/MM/YYYY')
+>>>>>>> Stashed changes
 }
 
 export default function Main() {

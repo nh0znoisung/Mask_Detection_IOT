@@ -14,6 +14,13 @@ import imutils
 import time
 import cv2
 import os
+<<<<<<< Updated upstream
+=======
+import urllib
+import sys
+from Adafruit_IO import MQTTClient
+import requests
+>>>>>>> Stashed changes
 
 
 def detect_and_predict_mask(frame, faceNet, maskNet):
@@ -81,8 +88,26 @@ def detect_and_predict_mask(frame, faceNet, maskNet):
 app = Flask(__name__)
 
 
+<<<<<<< Updated upstream
 url="http://127.0.0.1:5000/video"
 
+=======
+# url="https://media.w3.org/2010/05/sintel/trailer_hd.mp4"
+# url ="http://192.168.137.75/800x600.mjpeg"
+
+
+
+url ="http://192.168.137.75/800x600.jpg"
+# url ="http://192.168.137.75/1280x720.jpg"
+# url ="http://192.168.137.75/480x320.jpg"
+# url ="http://192.168.137.75/320x240.jpg"
+
+
+
+
+
+# url="http://192.169.137.75:5000/video"
+>>>>>>> Stashed changes
 
 
 global frame
@@ -136,6 +161,7 @@ def start_video_stream():
     global frame
     global prev_frame
     while True:
+<<<<<<< Updated upstream
 
         ret, frame = vs.read()
 
@@ -155,6 +181,61 @@ def start_video_stream():
                 st=time.time()
                 print("Wait")
             continue
+=======
+        r = requests.get(url, auth=('user', 'password'), stream=True)
+        if(r.status_code == 200):
+            tmp = bytes()
+            for chunk in r.iter_content(chunk_size=1024):
+                tmp += chunk
+                a = tmp.find(b'\xff\xd8')
+                b = tmp.find(b'\xff\xd9')
+                if a != -1 and b != -1:
+                    jpg = tmp[a:b+2]
+                    tmp = tmp[b+2:]
+                    frame = cv2.imdecode(np.fromstring(jpg, dtype=np.uint8), cv2.IMREAD_COLOR)
+                    # cv2.imshow('i', i)
+                    # if cv2.waitKey(1) == 27:
+                    #     exit(0)
+        # else:
+        #     print("Received unexpected status code {}".format(r.status_code))
+
+
+
+        # get img 
+        # imgRes=urllib.request.urlopen(url)
+        # imgnp=np.array(bytearray(imgRes.read()),dtype=np.uint8)
+        # frame = cv2.imdecode(imgnp,-1)
+        
+        
+        
+        
+        
+        
+        # ret, frame = vs.read()
+
+    #     cv2.imshow("Test", frame)
+    #     key = cv2.waitKey(1) & 0xFF
+
+    # # if the `q` key was pressed, break from the loop
+    #     if key == ord("q"):
+    #         break
+        # if ret==False:
+        #     # print("Hell")
+        #     #Reconnect to camserver after the amount of time
+        #     if time_wait!=0:
+        #         if (time.time()-st>5):
+        #             time_wait=0
+        #             try:
+        #                 vs=cv2.VideoCapture(url)
+        #                 time.sleep(5.0)
+        #             except:
+        #                 time_wait=1
+        #     else:
+        #         time_wait=1
+        #         st=time.time()
+        #         print("Wait")
+        #     continue
+>>>>>>> Stashed changes
 
         # print("Helooo")
         frame = imutils.resize(frame, width=400)
@@ -216,6 +297,100 @@ def getimage():
 
 
 
+<<<<<<< Updated upstream
+=======
+AIO_FEED_ID = ["btn-start", "swt-door"]
+AIO_USERNAME = "GodOfThunderK19"
+AIO_KEY = "aio_uTad06JQBJ5bWlXwstpYX1NEKE1l"
+
+AIO_FEED_BUTTON_Start = "btn-start"
+AIO_FEED_SWITCH_Door = "swt-door"
+
+flag_start=0
+time_start=0
+count_mask=0
+count_unmask=0
+time_start=0
+def connected(client):
+    for feed in AIO_FEED_ID:
+        print("Connected successfully to " + feed)
+        client.subscribe(feed)
+
+
+def subscribe(client, userdata, mid, granted_qos):
+    print("Subscribed successfully.")
+
+
+def disconnected(client):
+    print("Disconnecting.")
+    sys.exit(1)
+
+
+def message(client, feed_id, payload):
+    print("Received data: " + payload)
+    global flag_start
+    if payload == "START:ON":
+        flag_start = 1
+        print(flag_start)
+        
+def checkDoor():
+    global flag_start
+    global time_start
+    global count_mask
+    global count_unmask
+    if(flag_start==1):
+        if time_start==0:
+            time_start=time.time()
+        elif time.time()-time_start>9:
+            return 0
+        else:
+            if(is_mask==1):
+                count_mask+=1
+            else:
+                count_mask=0
+            if(count_mask>200):
+                return 1
+    return -1
+
+
+
+def mqttConnect():
+
+    global flag_start
+    global time_start
+    global count_mask
+    global count_unmask
+
+    client = MQTTClient(AIO_USERNAME, AIO_KEY)
+    client.on_connect = connected
+    client.on_disconnect = disconnected
+    client.on_subscribe = subscribe
+    client.on_message = message
+    client.connect()
+    client.loop_background()
+    flag_start = 0
+
+
+    while True:
+        # CheckDoor()
+        re=checkDoor()
+        if (re==0):
+            time_start=0
+            flag_start=0
+            count_mask=0
+            count_unmask=0
+            client.publish(AIO_FEED_SWITCH_Door, "DOOR:CLOSE")
+            client.publish(AIO_FEED_BUTTON_Start, "START:OFF")
+        elif (re==1):
+            time_start=0
+            flag_start=0
+            count_mask=0
+            count_unmask=0
+            client.publish(AIO_FEED_SWITCH_Door, "DOOR:OPEN")
+            client.publish(AIO_FEED_BUTTON_Start, "START:OFF")
+
+        time.sleep(0.01)
+>>>>>>> Stashed changes
 
 @app.route('/video')
 def video_feed():
