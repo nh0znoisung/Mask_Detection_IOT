@@ -3,11 +3,14 @@ from urllib.request import urlopen
 from cv2 import VideoCapture
 from flask import Flask, render_template, request,Response
 import cv2,imutils,time
-from tensorflow.keras.applications.vgg16 import preprocess_input
+# from tensorflow.keras.applications.vgg16 import preprocess_input
 from tensorflow.keras.preprocessing.image import img_to_array
+from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
+# from tensorflow.keras.preprocessing.image import img_to_array
 # from tensorflow.keras.models import load_model
+from tensorflow.keras.models import load_model
 import tensorflow as tf
-from metrics import *
+from train.metrics import *
 
 import pyshine as ps
 from imutils.video import VideoStream
@@ -87,7 +90,7 @@ app = Flask(__name__)
 
 # url="https://media.w3.org/2010/05/sintel/trailer_hd.mp4"
 url ="http://192.168.137.75/800x600.mjpeg"
-# 
+# url ="http://192.168.137.75/1280x720.mjpeg"
 
 
 # url ="http://192.168.137.75/800x600.jpg"
@@ -139,16 +142,16 @@ def start_video_stream():
     # load the face mask detector model from disk
     print("[INFO] loading face mask detector model...")
 
-    # maskNet = load_model(args["model"])
+    maskNet = load_model(args["model"])
 
-    maskNet = tf.keras.models.load_model('./ckpt/vgg16/', 
-    custom_objects={'recall_m': recall_m, 'precision_m': precision_m, 'f1_m': f1_m})
+    # maskNet = tf.keras.models.load_model('./ckpt/vgg16/', 
+    # custom_objects={'recall_m': recall_m, 'precision_m': precision_m, 'f1_m': f1_m})
     print("COMPLETE LOADING MODEL.")
 
 
     # initialize the video stream and allow the camera sensor to warm up
     print("[INFO] starting video stream...")
-    vs=cv2.VideoCapture(0)
+    # vs=cv2.VideoCapture(0)
     # Read until video is completed
     # fps=0
     # st=0
@@ -176,8 +179,8 @@ def start_video_stream():
                 tmp = tmp[b+2:]
                 frame = cv2.imdecode(np.fromstring(jpg, dtype=np.uint8), cv2.IMREAD_COLOR)
                 # cv2.imshow('i', frame)
-                if cv2.waitKey(1) == 27:
-                    exit(0)
+                # if cv2.waitKey(1) == 27:
+                #     exit(0)
                 frame = imutils.resize(frame, width=400)
 
     # while True:
@@ -249,7 +252,7 @@ def start_video_stream():
                 prev_frame=frame
                 
                 fin=1
-                # time.sleep(0.01)
+                time.sleep(0.01)
                 cv2.imshow("Test", frame)
                 key = cv2.waitKey(1) & 0xFF
 
@@ -371,7 +374,7 @@ def getimage():
         if fin==1:
             frame1 = cv2.imencode('.JPEG', prev_frame,[cv2.IMWRITE_JPEG_QUALITY,20])[1].tobytes()
             # print("Hii")
-            time.sleep(0.016)
+            # time.sleep(0.016)
             yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame1 + b'\r\n')
 
 
@@ -380,7 +383,7 @@ def getimage():
 AIO_FEED_ID = ["btn-start", "swt-door"]
 AIO_USERNAME = "GodOfThunderK19"
 
-AIO_KEY = "aio_MxXv480CDtLjahsm60zjaYmTxFRY"
+AIO_KEY = "aio_ZIyf65GjSuFA4pZv73XA0L73Znkp"
 
 
 
@@ -477,14 +480,14 @@ def video_feed():
    	return Response(getimage(),mimetype='multipart/x-mixed-replace; boundary=frame')
 
 def web():
-    app.run(debug=True, host='localhost',port=9999,threaded=True, use_reloader=False)
+    app.run(debug=True, host='localhost',threaded=True, use_reloader=False)
 
 
 if __name__ == "__main__":
 	
 
     threading.Thread(target=start_video_stream, daemon=True).start()
-    # threading.Thread(target=mqttConnect, daemon=True).start()
-    # threading.Thread(target=web, daemon=True).start()
+    threading.Thread(target=mqttConnect, daemon=True).start()
+    threading.Thread(target=web, daemon=True).start()
     while True:
         time.sleep(1)

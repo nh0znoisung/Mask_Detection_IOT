@@ -15,7 +15,6 @@
     "nodemon": "^2.0.15",
     "redis": "^4.0.3"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon index.js"

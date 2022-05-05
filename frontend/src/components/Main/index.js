@@ -58,9 +58,9 @@ function Bulb(props){
     }
 }
 
-const URL_BACKEND = 'http://localhost:5000/'
+const URL_BACKEND = 'http://localhost:50/'
 const TIMEZONE = "Asia/Ho_Chi_Minh"
-const ADA_KEY = "aio_HEPK82iCycd8fBUTW5uO8Aoey2tz"
+const ADA_KEY = "aio_ZIyf65GjSuFA4pZv73XA0L73Znkp"
 
 function convertDate(s){
     // s: string
@@ -187,7 +187,7 @@ export default function Main() {
                         // src="https://media.w3.org/2010/05/sintel/trailer_hd.mp4"
                         src = "https://9be4-115-78-8-83.ngrok.io/video"
                     />    */}
-                    <img style={{height: "30vw", width:"54vw"}} alt="Video here" src="http://localhost:9999/video"></img>       
+                    <img style={{height: "30vw", width:"54vw"}} alt="Video here" src="http://localhost:5000/video"></img>       
                     {/* </div> */}
                     <div className='info'>
                         <div className='door'>State of authority:  <Door option={door} /></div>

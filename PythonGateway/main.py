@@ -6,7 +6,7 @@ from Adafruit_IO import MQTTClient
 
 AIO_FEED_ID = ["btn-start", "swt-door", "sensor-light", "swt-light", "btn-authority"]
 AIO_USERNAME = "GodOfThunderK19"
-AIO_KEY = "aio_kTOa97LfsagTHR8mdJmqzR9Cg9Pg"
+AIO_KEY = "aio_ZIyf65GjSuFA4pZv73XA0L73Znkp"
 
 AIO_FEED_BUTTON_Start = "btn-start"
 AIO_FEED_SWITCH_Door = "swt-door"
